@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Autonomous extends OpMode implements GameConstants {
     //don't forget to double check that this is IDENTICAL to teleop
-    private DcMotor motor1; //motors 1-4 are drivetrain
-    private DcMotor motor2;
-    private DcMotor motor3;
-    private DcMotor motor4;
+    private DcMotor leftMotor1;
+    private DcMotor leftMotor2;
+    private DcMotor rightMotor1;
+    private DcMotor rightMotor2;
 
     private DcMotor motor5; //?? confirm w mechanical on motors 5-8, maybe rename?
     private DcMotor motor6;
