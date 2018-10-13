@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="BasicTeleOp",group="D")
@@ -25,8 +26,10 @@ public class BasicTeleOp extends OpMode {
         //initializes motors, retrieve configs from RevHub and Controllers
         lmotor1 = hardwareMap.dcMotor.get("lm1");
         lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lmotor1.setDirection(DcMotorSimple.Direction.REVERSE);
 
-       lmotor2 = hardwareMap.dcMotor.get("lm2");
+
+        lmotor2 = hardwareMap.dcMotor.get("lm2");
        lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         rmotor1 = hardwareMap.dcMotor.get("rm1");
@@ -34,6 +37,8 @@ public class BasicTeleOp extends OpMode {
 
         rmotor2 = hardwareMap.dcMotor.get("rm2");
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         //retrieve configs of any other mechanical aspects
     }
@@ -60,8 +65,8 @@ public class BasicTeleOp extends OpMode {
             double trigger = gamepad1.right_trigger;
             lmotor1.setPower(Math.pow(trigger, 5));
             lmotor2.setPower(Math.pow(trigger, 5));
-            rmotor1.setPower(-Math.pow(trigger, 5));
-           rmotor2.setPower(-Math.pow(trigger, 5));
+            rmotor1.setPower(Math.pow(trigger, 5));
+           rmotor2.setPower(Math.pow(trigger, 5));
             return;
         }
         double rawx = gamepad1.right_stick_x;
