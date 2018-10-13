@@ -71,8 +71,8 @@ public class BasicTeleOp extends OpMode {
         }
         double rawx = gamepad1.right_stick_x;
         double rawy = -gamepad1.right_stick_y;
-        double x= Math.pow(rawx, 7); //adjust sensitivity?
-        double y = Math.pow(rawy, 7);
+        double x= Math.pow(rawx, 5); //adjust sensitivity?
+        double y = Math.pow(rawy, 5);
         if (x != 0 || y != 0) {
             double n = ((x + y) / Math.sqrt(2.0)); // n is the power of the motors in the +x +y direction
             double m = ((x - y) / Math.sqrt(2.0)); // m is the power of the motors in the +x -y direction
