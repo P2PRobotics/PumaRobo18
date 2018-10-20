@@ -30,14 +30,15 @@ public class BasicTeleOp extends OpMode {
 
 
         lmotor2 = hardwareMap.dcMotor.get("lm2");
-       lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         rmotor1 = hardwareMap.dcMotor.get("rm1");
         rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        rmotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        
         rmotor2 = hardwareMap.dcMotor.get("rm2");
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
 
         //retrieve configs of any other mechanical aspects
@@ -55,6 +56,7 @@ public class BasicTeleOp extends OpMode {
         //pivoting and turning, uses left and right triggers
         if (gamepad1.left_trigger > 0.05) {
             double trigger = gamepad1.left_trigger;
+            //left trigger to pivot
             lmotor1.setPower(-Math.pow(trigger, 5));
             lmotor2.setPower(-Math.pow(trigger, 5));
             rmotor1.setPower(Math.pow(trigger, 5));
@@ -63,6 +65,7 @@ public class BasicTeleOp extends OpMode {
         }
         if (gamepad1.right_trigger > 0.05) {
             double trigger = gamepad1.right_trigger;
+            //right trigger to move
             lmotor1.setPower(Math.pow(trigger, 5));
             lmotor2.setPower(Math.pow(trigger, 5));
             rmotor1.setPower(Math.pow(trigger, 5));
