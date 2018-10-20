@@ -35,7 +35,7 @@ public class BasicTeleOp extends OpMode {
         rmotor1 = hardwareMap.dcMotor.get("rm1");
         rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rmotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        
+
         rmotor2 = hardwareMap.dcMotor.get("rm2");
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
