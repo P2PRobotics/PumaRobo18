@@ -1,6 +1,7 @@
 package com.qualcomm.robotcore.eventloop.opmode;
 
-public @interface Teleop {
-	String name();
-	String group();
+public @interface TeleOp {
+    String name();
+
+    String group();
 }

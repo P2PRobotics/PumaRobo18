@@ -8,12 +8,12 @@ public interface DcMotor extends DcMotorSimple {
 //	public void setMode(RunMode mode);
 //	public void setTargetPosition(int target);
 //	public void setZeroPowerBehavior(ZeroPowerBehavior zeroPowerBehavior);
-	
-	public class RunMode {
-		
-	}
-	
-	public enum ZeroPowerBehavior {
-		
-	}
+
+    public class RunMode {
+
+    }
+
+    public enum ZeroPowerBehavior {
+
+    }
 }

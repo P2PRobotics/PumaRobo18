@@ -13,101 +13,101 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "AAAAAARP")
 public class Autonomous extends OpMode implements RobotConstants {
-	// Actuators
-	private DcMotor motor1;
-	private DcMotor motor2;
-	private DcMotor motor3;
-	private DcMotor motor4;
-	private DcMotor motor5;
-	private DcMotor motor6;
+    // Actuators
+    private DcMotor motor1;
+    private DcMotor motor2;
+    private DcMotor motor3;
+    private DcMotor motor4;
+    private DcMotor motor5;
+    private DcMotor motor6;
 
-	// Servo
-	private Servo USpivot;
+    // Servo
+    private Servo USpivot;
 
-	// Sensors
-	private ModernRoboticsI2cRangeSensor rangeSensor;
-	private OrientationSensor orientationSensor;
-	private VuforiaHelper2 vuforia;
+    // Sensors
+    private ModernRoboticsI2cRangeSensor rangeSensor;
+    private OrientationSensor orientationSensor;
+    private VuforiaHelper2 vuforia;
 
-	// State machine
-	private State state;
-	private Stack<State> nextStates;
+    // State machine
+    private State state;
+    private Stack<State> nextStates;
 
-	// State machine variables
-	private double delay;
-	private double delayStart;
+    // State machine variables
+    private double delay;
+    private double delayStart;
 
-	// Autonomous variables
-	private Stack<Integer> readings;
-	private static final int FILTER_BUFFER_LENGTH = 3;
-	private Queue<Integer> distanceFilter;
+    // Autonomous variables
+    private Stack<Integer> readings;
+    private static final int FILTER_BUFFER_LENGTH = 3;
+    private Queue<Integer> distanceFilter;
 
-	private int objectCount;
-	private int keyColumn;
-	private double distance = 255;
+    private int objectCount;
+    private int keyColumn;
+    private double distance = 255;
 
-	private double prevdistance;
-	private double distBeforeIncrease;
+    private double prevdistance;
+    private double distBeforeIncrease;
 
-	private int readingDistNum;
-	private Stack<Integer> times = new Stack<Integer>();
+    private int readingDistNum;
+    private Stack<Integer> times = new Stack<Integer>();
 
-	public static final double SPEED = 0.18;
+    public static final double SPEED = 0.18;
 
-	public void init() {
-		motor1 = hardwareMap.dcMotor.get("w1");
+    public void init() {
+        motor1 = hardwareMap.dcMotor.get("w1");
 
-		motor2 = hardwareMap.dcMotor.get("w2");
+        motor2 = hardwareMap.dcMotor.get("w2");
 
-		motor3 = hardwareMap.dcMotor.get("w3");
+        motor3 = hardwareMap.dcMotor.get("w3");
 
-		motor4 = hardwareMap.dcMotor.get("w4");
+        motor4 = hardwareMap.dcMotor.get("w4");
 
-		motor5 = hardwareMap.dcMotor.get("w5");
+        motor5 = hardwareMap.dcMotor.get("w5");
 
-		motor6 = hardwareMap.dcMotor.get("w6");
+        motor6 = hardwareMap.dcMotor.get("w6");
 
-		rangeSensor = hardwareMap.range.get("range");
+        rangeSensor = hardwareMap.range.get("range");
 
-		orientationSensor = new OrientationSensor(hardwareMap);
+        orientationSensor = new OrientationSensor(hardwareMap);
 
-		state = State.MOVE;
-		nextStates = new Stack<State>();
+        state = State.MOVE;
+        nextStates = new Stack<State>();
 
-		vuforia = new VuforiaHelper2(hardwareMap);
+        vuforia = new VuforiaHelper2(hardwareMap);
 
-		USpivot = hardwareMap.servo.get("usp");
-		USpivot.setPosition(1);
+        USpivot = hardwareMap.servo.get("usp");
+        USpivot.setPosition(1);
 
-		readings = new Stack<Integer>();
-		distanceFilter = new LinkedList<Integer>();
-	}
+        readings = new Stack<Integer>();
+        distanceFilter = new LinkedList<Integer>();
+    }
 
-	public void start() {
-		vuforia.start();
+    public void start() {
+        vuforia.start();
 
-		USpivot.setPosition(0.5);
-	}
+        USpivot.setPosition(0.5);
+    }
 
-	@SuppressWarnings("incomplete-switch")
-	public void loop() {
-		if (keyColumn == 0) {
-			vuforia.loop();
-			keyColumn = vuforia.getKeyColumn();
-		}
-		double heading = orientationSensor.getOrientation();
-		telemetry.addData("heading", heading);
+    @SuppressWarnings("incomplete-switch")
+    public void loop() {
+        if (keyColumn == 0) {
+            vuforia.loop();
+            keyColumn = vuforia.getKeyColumn();
+        }
+        double heading = orientationSensor.getOrientation();
+        telemetry.addData("heading", heading);
 
-		switch (state) {
+        switch (state) {
 
-		case MOVE:
-			System.out.println("Distance: " + rangeSensor.getDistance(DistanceUnit.CM));
-			move(0,0,0);
-			if (rangeSensor.getDistance(DistanceUnit.CM) > 160) {
-				move(0, Movements.FORWARD.getValue(), 0.5);
-			}
-			
-			break;
+            case MOVE:
+                System.out.println("Distance: " + rangeSensor.getDistance(DistanceUnit.CM));
+                move(0, 0, 0);
+                if (rangeSensor.getDistance(DistanceUnit.CM) > 160) {
+                    move(0, Movements.FORWARD.getValue(), 0.5);
+                }
+
+                break;
 
 //            case START:
 //                delay = 1;
@@ -312,34 +312,34 @@ public class Autonomous extends OpMode implements RobotConstants {
 //                    state = nextStates.pop();
 //                }
 //                break;
-		}
+        }
 
-		telemetry.addData("State", state);
-		telemetry.addData("Current distance is ", distance);
-		telemetry.addData("Objects passed: ", objectCount);
-		telemetry.addData("Key column", keyColumn);
-	}
+        telemetry.addData("State", state);
+        telemetry.addData("Current distance is ", distance);
+        telemetry.addData("Objects passed: ", objectCount);
+        telemetry.addData("Key column", keyColumn);
+    }
 
-	// double x = gamepad1.right_stick_x;
-	// double y = gamepad1.right_stick_y;
-	// double dir = gamepad1.right_trigger or gamepad1.left_trigger;
-	public void move(double x, double y, double dir) {
-		if (dir != 0.5) { // Rotating
-			motor1.setPower(dir);
-			motor2.setPower(-dir);
-			motor3.setPower(-dir);
-			motor4.setPower(dir);
+    // double x = gamepad1.right_stick_x;
+    // double y = gamepad1.right_stick_y;
+    // double dir = gamepad1.right_trigger or gamepad1.left_trigger;
+    public void move(double x, double y, double dir) {
+        if (dir != 0.5) { // Rotating
+            motor1.setPower(dir);
+            motor2.setPower(-dir);
+            motor3.setPower(-dir);
+            motor4.setPower(dir);
 //			motor5.setPower(dir);
 //			motor6.setPower(-dir);
-			// Translating
-		} else {
-			motor1.setPower(y);
-			motor2.setPower(y);
-			motor3.setPower(y);
-			motor4.setPower(y);
+            // Translating
+        } else {
+            motor1.setPower(y);
+            motor2.setPower(y);
+            motor3.setPower(y);
+            motor4.setPower(y);
 //			motor5.setPower(y);
 //			motor6.setPower(y);
-		}
+        }
 
 //            else { // Translating
 //            double n = ((x + y) / Math.sqrt(2.0)); // n is the power of the motors in the +x +y direction
@@ -351,5 +351,5 @@ public class Autonomous extends OpMode implements RobotConstants {
 //            motor5.setPower(m);
 //            motor6.setPower(n);
 //        }
-	}
+    }
 }

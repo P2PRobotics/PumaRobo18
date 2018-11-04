@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 public enum Movements {
-	FORWARD(1), BACKWARD(-1);
+    FORWARD(1), BACKWARD(-1);
 
     private final int value;
 
@@ -9,8 +9,8 @@ public enum Movements {
         value = newValue;
     }
 
-    public int getValue() { 
-    	return value; 
+    public int getValue() {
+        return value;
     }
 }
 
