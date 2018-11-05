@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous" , group = "AAAAAARP")
-
-public class Autonomous extends OpMode implements GameConstants {
+@Autonomous(name = "AutonomousOp" , group = "AAAAAARP")
+public class AutonomousOp extends OpMode implements GameConstants {
     //drivetrain
     private DcMotor lmotor1;
     private DcMotor lmotor2;

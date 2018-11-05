@@ -9,8 +9,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import org.firstinspires.ftc.teamcode.TeleOpAlt;
 import org.pumatech.robotcore.external.GUITelemetry;
-import org.firstinspires.ftc.teamcode.BasicTeleOp;
+import org.firstinspires.ftc.teamcode.p2p2017.BasicTeleOp2017;
 import org.pumatech.field.Field;
 import org.pumatech.physics.Vec2;
 import org.pumatech.robot.Robot;
@@ -60,8 +61,9 @@ public class DriverStation {
         // }
 
         // Initialize opmode and connect it to robot and gamepads (and telemetry later)
-        //opmode = new Autonomous();
-        opmode = new BasicTeleOp();
+        //opmode = new Autonomous2017();
+        opmode = new BasicTeleOp2017();
+//        opmode = new TeleOpAlt();
         opmode.setup(robot.getHardwareMap(), gamepad1, gamepad2);
         opmode.init();
         opmode.start();

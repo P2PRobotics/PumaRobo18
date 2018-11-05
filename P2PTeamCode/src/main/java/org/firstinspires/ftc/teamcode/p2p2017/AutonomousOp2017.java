@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -6,13 +6,14 @@ import java.util.Stack;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "AAAAAARP")
-public class Autonomous extends OpMode implements RobotConstants {
+@Autonomous(name = "AutonomousOp2017", group = "AAAAAARP")
+public class AutonomousOp2017 extends OpMode implements RobotConstants2017 {
     // Actuators
     private DcMotor motor1;
     private DcMotor motor2;
@@ -26,12 +27,12 @@ public class Autonomous extends OpMode implements RobotConstants {
 
     // Sensors
     private DistanceSensor distanceSensor;
-    private OrientationSensor orientationSensor;
-    private VuforiaHelper2 vuforia;
+    private OrientationSensor2017 orientationSensor;
+    private VuforiaHelper2017 vuforia;
 
     // State machine
-    private State state;
-    private Stack<State> nextStates;
+    private State2017 state;
+    private Stack<State2017> nextStates;
 
     // State machine variables
     private double delay;
@@ -69,12 +70,12 @@ public class Autonomous extends OpMode implements RobotConstants {
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "range");
 
-        orientationSensor = new OrientationSensor(hardwareMap);
+        orientationSensor = new OrientationSensor2017(hardwareMap);
 
-        state = State.MOVE;
-        nextStates = new Stack<State>();
+        state = State2017.MOVE;
+        nextStates = new Stack<State2017>();
 
-        vuforia = new VuforiaHelper2(hardwareMap);
+        vuforia = new VuforiaHelper2017(hardwareMap);
 
         USpivot = hardwareMap.servo.get("usp");
         USpivot.setPosition(1);
@@ -104,7 +105,7 @@ public class Autonomous extends OpMode implements RobotConstants {
                 System.out.println("Distance: " + distanceSensor.getDistance(DistanceUnit.CM));
                 move(0, 0, 0);
                 if (distanceSensor.getDistance(DistanceUnit.CM) > 160) {
-                    move(0, Movements.FORWARD.getValue(), 0.5);
+                    move(0, Movements2017.FORWARD.getValue(), 0.5);
                 }
 
                 break;

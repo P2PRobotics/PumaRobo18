@@ -1,14 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class OrientationSensor {
+public class OrientationSensor2017 {
     private BNO055IMU imu;
     private double startAngle;
     private boolean hasStarted;
 
-    public OrientationSensor(HardwareMap map) {
+    public OrientationSensor2017(HardwareMap map) {
         imu = map.get(BNO055IMU.class, "imu");
     }
 

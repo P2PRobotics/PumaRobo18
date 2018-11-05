@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
-public enum Movements {
+public enum Movements2017 {
     FORWARD(1), BACKWARD(-1);
 
     private final int value;
 
-    Movements(final int newValue) {
+    Movements2017(final int newValue) {
         value = newValue;
     }
 

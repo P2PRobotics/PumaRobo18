@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
-public class PIDController {
+public class PIDController2017 {
 
     private int goal;
     private double lastposition;

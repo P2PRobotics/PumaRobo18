@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class MotorTestOp extends OpMode {
+public class MotorTestOp2017 extends OpMode {
 
     private DcMotor motor1;
     private DcMotor motor2;
@@ -12,7 +12,7 @@ public class MotorTestOp extends OpMode {
     private DcMotor motor5;
     private DcMotor motor6;
 
-    private OrientationSensor orientationSensor;
+    private OrientationSensor2017 orientationSensor;
 
     private double pos = 0.5;
 
@@ -30,7 +30,7 @@ public class MotorTestOp extends OpMode {
         // motor2.setDirection(DcMotorSimple.Direction.REVERSE);
         // motor3.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        orientationSensor = new OrientationSensor(hardwareMap);
+        orientationSensor = new OrientationSensor2017(hardwareMap);
     }
 
     @Override

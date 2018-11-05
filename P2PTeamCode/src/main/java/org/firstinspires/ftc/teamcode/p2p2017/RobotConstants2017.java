@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
-public interface RobotConstants {
+public interface RobotConstants2017 {
     public static final boolean RED_TEAM = true;
 
     // Autonomous parameters

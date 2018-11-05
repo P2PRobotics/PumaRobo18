@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.p2p2017;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class VuforiaHelper2 {
+public class VuforiaHelper2017 {
     private int keyColumn;
 
-    public VuforiaHelper2(HardwareMap hardwareMap) {
+    public VuforiaHelper2017(HardwareMap hardwareMap) {
 
     }
 
