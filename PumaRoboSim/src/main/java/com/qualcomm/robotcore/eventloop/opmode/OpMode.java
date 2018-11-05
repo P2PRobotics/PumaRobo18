@@ -1,7 +1,7 @@
 package com.qualcomm.robotcore.eventloop.opmode;
 
-import org.firstinspires.ftc.robotcore.external.BasicTelemetry;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.pumatech.robotcore.external.BasicTelemetry;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;

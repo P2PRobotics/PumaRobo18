@@ -1,8 +1,8 @@
-//dependencies {
-//    implementation (name:'Inspection-release', ext: 'aar')
-//    implementation (name:'Blocks-release', ext: 'aar')
-//    implementation (name:'RobotCore-release', ext: 'aar')
-//    implementation (name:'Hardware-release', ext: 'aar')
-//    implementation (name:'FtcCommon-release', ext: 'aar')
-//    implementation (name:'WirelessP2p-release', ext:'aar')
-//}
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile group: 'net.java.jinput', name: 'jinput', version: '2.0.7'
+    compile group: 'net.java.jinput', name: 'jinput-platform', version: '2.0.7'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.9-RC1'
+    testCompile group: 'junit', name: 'junit', version: '3.8.1'
+    implementation project(':P2PTeamCode')
+}

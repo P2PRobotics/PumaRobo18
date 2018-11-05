@@ -1,3 +1,3 @@
-apply plugin: 'java'
+apply plugin: 'java-library'
 
 apply from: '../build.p2pcommon.gradle'

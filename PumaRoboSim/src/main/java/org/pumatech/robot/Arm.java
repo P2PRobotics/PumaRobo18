@@ -1,22 +1,19 @@
 package org.pumatech.robot;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
-import java.awt.geom.Line2D;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
 
 import org.pumatech.physics.Attachment;
 import org.pumatech.physics.Body;
 import org.pumatech.physics.Material;
 import org.pumatech.physics.Polygon;
 import org.pumatech.physics.Vec2;
+import org.pumatech.robotcore.hardware.SimDcMotor;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import java.awt.Graphics2D;
 
-public class Arm extends Polygon implements DcMotor {
+public class Arm extends Polygon {
     private Attachment attachment;
     private double radius;
     private double direction;
@@ -124,13 +121,15 @@ public class Arm extends Polygon implements DcMotor {
         return verts;
     }
 
-    @Override
-    public Direction getDirection() {
-        if (power > 0) {
-            return DcMotorSimple.Direction.FORWARD;
+    public DcMotor dcMotor = new SimDcMotor() {
+        @Override
+        public Direction getDirection() {
+            if (power > 0) {
+                return DcMotorSimple.Direction.FORWARD;
+            }
+            return DcMotorSimple.Direction.REVERSE;
         }
-        return DcMotorSimple.Direction.REVERSE;
-    }
+    };
 
 //	public Vec2 centerPoint() {
 //		return attachment.getPoint();

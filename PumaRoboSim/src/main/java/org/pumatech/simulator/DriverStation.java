@@ -9,9 +9,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import org.firstinspires.ftc.robotcore.external.GUITelemetry;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Autonomous;
+import org.pumatech.robotcore.external.GUITelemetry;
 import org.firstinspires.ftc.teamcode.BasicTeleOp;
 import org.pumatech.field.Field;
 import org.pumatech.physics.Vec2;
@@ -35,7 +33,7 @@ public class DriverStation {
     private Gamepad gamepad1, gamepad2;
     private List<Class<? extends OpMode>> teleopOpModes, autonomousOpModes;
     private boolean hasInit, isRun;
-    private Telemetry telemetry;
+    private GUITelemetry telemetry;
 
     public DriverStation(Robot robot, Field field) {
         this.robot = robot;

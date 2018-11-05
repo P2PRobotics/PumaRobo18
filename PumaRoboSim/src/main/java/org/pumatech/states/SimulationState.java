@@ -1,5 +1,7 @@
 package org.pumatech.states;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -15,8 +17,6 @@ import org.pumatech.physics.Vec2;
 import org.pumatech.robot.Robot;
 import org.pumatech.simulator.Camera;
 import org.pumatech.simulator.DriverStation;
-
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import net.java.games.input.Component;
 import net.java.games.input.Controller;

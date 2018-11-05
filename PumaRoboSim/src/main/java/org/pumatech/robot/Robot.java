@@ -1,5 +1,7 @@
 package org.pumatech.robot;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
@@ -12,18 +14,21 @@ import org.pumatech.physics.PhysicsEngine;
 import org.pumatech.physics.Polygon;
 import org.pumatech.physics.Vec2;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.pumatech.robotcore.hardware.SimColorSensor;
+import org.pumatech.robotcore.hardware.bosch.SimBNO055IMU;
+import org.pumatech.robotcore.hardware.modernrobotics.SimModernRoboticsI2cRangeSensor;
+
+import static org.pumatech.physics.Material.ARM;
 
 public class Robot {
 
     private Wheel w1, w2, w3, w4, w5, w6;
     private Arm arm1;
+    RobotColorSensor robotColorSensor;
     private Body chassis;
     private HardwareMap hardwareMap;
-    private BNO055IMU imu;
-    private ModernRoboticsI2cRangeSensor rangeSensor;
+    private SimBNO055IMU imu;
+    private SimModernRoboticsI2cRangeSensor rangeSensor;
     private USPivot usp;
 
     public Robot(Vec2 pos, PhysicsEngine engine, double direction) {
@@ -40,11 +45,21 @@ public class Robot {
         w6 = new Wheel(2, 4.7, chassis.getAttachment(new Vec2(-8, 0)));
 
         arm1 = new Arm(2, 4.7, chassis.getAttachment(new Vec2(-6, 0)),
-            Arm.getVerts(chassis.getAttachment(new Vec2(-6, 0)), 2, 4.7, false), Material.ARM);
+            Arm.getVerts(chassis.getAttachment(new Vec2(-6, 0)), 2, 4.7, false), ARM);
 
         chassis.moveBy(pos);
         arm1.moveBy(pos);
 
+        robotColorSensor = new RobotColorSensor(chassis.getAttachment(new Vec2(50, 50)),
+            0.0,
+            engine,
+            new SimColorSensor(),
+            RobotColorSensor.getVerts(
+                chassis.getAttachment(new Vec2(50, 50)), 2, 5,
+                false
+            ),
+            ARM
+        );
 
         hardwareMap = new HardwareMap();
 
@@ -54,7 +69,8 @@ public class Robot {
         hardwareMap.dcMotor.put("w4", w4);
         hardwareMap.dcMotor.put("w5", w5);
         hardwareMap.dcMotor.put("w6", w6);
-        hardwareMap.dcMotor.put("arm1", arm1);
+        hardwareMap.dcMotor.put("arm1", arm1.dcMotor);
+        hardwareMap.colorSensor.put("colorSensor", robotColorSensor.colorSensor);
 
         //rangeSensor = new ModernRoboticsI2cRangeSensor(chassis.getAttachment(pos.added(new Vec2(7, -9))), 0, engine);
         //hardwareMap.range.put("range", rangeSensor);
@@ -65,8 +81,8 @@ public class Robot {
         chassis.rotateBy(Math.PI);
         arm1.rotateBy(Math.PI);
 
-        imu = new BNO055IMU(chassis);
-        hardwareMap.imu.put("imu", imu);
+        imu = new SimBNO055IMU(chassis);
+        hardwareMap.put("imu", imu);
 
         chassis.rotateBy(2.3);
         arm1.rotateBy(2.3);
