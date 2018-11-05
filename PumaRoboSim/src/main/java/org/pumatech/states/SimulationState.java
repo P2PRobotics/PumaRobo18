@@ -152,18 +152,31 @@ public class SimulationState extends State {
 
             // New gamepad setting system, Weston said it worked best - CR
             for (Component com : components) {
-                if (com.getPollData() == 1) {
-                    if (com.getName().equals("Button 7")) {
-                        startPressed = true;
-                    }
-                    if (com.getName().equals("Button 0") && startPressed) {
-                        System.out.println("a");
-                        ds.setGamepad1(new Gamepad(c));
-                        startPressed = false;
-                    } else if (com.getName().equals("Button 1") && startPressed) {
-                        System.out.println("b");
-                        ds.setGamepad2(new Gamepad(c));
-                        startPressed = false;
+                String comName = com.getName();
+                if (com.getPollData() == 1.0f) {
+                    switch (comName) {
+                        case "Button 7":
+                        case "8":
+                            startPressed = true;
+                            break;
+
+                        case "Button 0":
+                        case "0":
+                            if (startPressed) {
+                                System.out.println("a");
+                                ds.setGamepad1(new Gamepad(c));
+                                startPressed = false;
+                            }
+                            break;
+
+                        case "Button 1":
+                        case "1":
+                            if (startPressed) {
+                                System.out.println("b");
+                                ds.setGamepad2(new Gamepad(c));
+                                startPressed = false;
+                            }
+                            break;
                     }
                 }
             }

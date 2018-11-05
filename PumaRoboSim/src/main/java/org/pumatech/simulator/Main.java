@@ -2,10 +2,40 @@ package org.pumatech.simulator;
 
 import org.pumatech.physics.Vec2;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 // Entry class, contains only main method
 public class Main {
 
+    private static String setDefaultSystemProperty(final String property, final String value) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            public String run() {
+                String existing = System.getProperty(property);
+                if (null != existing) return existing;
+                return System.setProperty(property, value);
+            }
+        });
+    }
+
+    private static void setupJinput() {
+        // Download jinput-platform-2.0.7-natives-osx.jar info ${HOME}/PumaRobotics/PumaRoboSim/libs/
+        // cd ${HOME}/PumaRobotics/PumaRoboSim/libs
+        // jar xvf jinput-platform-2.0.7-natives-osx.jar
+        // cp libjinput-osx.jnilib libjinput-osx.dylib
+        setDefaultSystemProperty(
+            "net.java.games.input.librarypath",
+            System.getProperty("user.dir") + "/PumaRoboSim/libs"
+        );
+        setDefaultSystemProperty(
+            "jinput.controllerPluginPath",
+            "PumaRoboSim/libs"
+        );
+    }
+
     public static void main(String[] args) {
+        setupJinput();
+
         // Start simulator in a new Thread
         new Thread(new Simulator()).start();
 

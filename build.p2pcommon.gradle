@@ -1,5 +1,5 @@
-apply from: 'build.release.gradle'
-
 repositories {
     mavenCentral()
 }
+
+apply from: 'build.release.gradle'
