@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "AutonomousOp" , group = "AAAAAARP")
 public class AutonomousOp extends OpMode implements GameConstants {
@@ -15,6 +20,7 @@ public class AutonomousOp extends OpMode implements GameConstants {
 
     private DcMotor liftmotor;
     private Servo liftgrab;
+
 
     private DcMotor intake;
 
@@ -81,5 +87,6 @@ public class AutonomousOp extends OpMode implements GameConstants {
         //}
         //use vuforia to locate crater
         //park in crater
+
     }
 }
