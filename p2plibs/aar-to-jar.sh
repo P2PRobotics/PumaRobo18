@@ -9,7 +9,7 @@ if [[ ${RET} != 0 ]]; then
   exit 1
 fi
 
-AAR_LIB="${HERE}/../../libs"
+AAR_LIB="${HERE}/../libs"
 JAR_LIB="${HERE}"
 
 for aar in "${AAR_LIB}"/*.aar; do
