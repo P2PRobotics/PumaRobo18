@@ -101,8 +101,14 @@ public class TeleOpAlt extends OpMode {
         if(gamepad1.x){
             liftgrab.setPosition(-0.5);
         }
-        //place marker
-        //intake method
+        //B for intake, Y for output
+        if(gamepad1.b){
+            intake.setPower(5);
+        }
+        if(gamepad1.y){
+            intake.setPower(-5);
+        }
+
 
     }
 }

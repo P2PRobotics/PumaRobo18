@@ -14,12 +14,12 @@ public class BasicTeleOp extends OpMode {
     private DcMotor rmotor1;
     private DcMotor rmotor2;
 
+    //lifter and lander (servo latches on to lander, motor extends/retracts arm)
     private DcMotor liftmotor;
     private Servo liftgrab;
 
+    //wheeled intake system
     private DcMotor intake;
-
-    private Servo placemarker; //?? double check if we need this
 
 
     @Override
@@ -39,16 +39,18 @@ public class BasicTeleOp extends OpMode {
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //retrieve configs of any other mechanical aspects
         liftmotor= hardwareMap.dcMotor.get("liftmo");
         liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         liftgrab= hardwareMap.servo.get("liftserv");
 
+        intake=hardwareMap.dcMotor.get("intake");
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
     }
     public void start(){
-    //??
+
     }
     @Override
     public void loop(){
@@ -104,8 +106,12 @@ public class BasicTeleOp extends OpMode {
         if(gamepad1.x){
             liftgrab.setPosition(-0.5);
         }
-        //marker placement
-        //intake method??
-
+        //B for intake, Y for output
+        if(gamepad1.b){
+            intake.setPower(5);
+        }
+        if(gamepad1.y){
+            intake.setPower(-5);
+        }
     }
 }
