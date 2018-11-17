@@ -20,7 +20,6 @@ public class BasicTeleOp extends OpMode {
 
     //wheeled intake system
     private DcMotor intake1;
-    private DcMotor intake2;
 
 
     @Override
@@ -47,10 +46,6 @@ public class BasicTeleOp extends OpMode {
 
         intake1=hardwareMap.dcMotor.get("intake1");
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        intake2=hardwareMap.dcMotor.get("intake2");
-        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
     }
     public void start(){
@@ -113,12 +108,10 @@ public class BasicTeleOp extends OpMode {
         //B for intake, Y for output
         if(gamepad1.b){
             intake1.setPower(5);
-            intake2.setPower(5);
 
         }
         if(gamepad1.y){
             intake1.setPower(-5);
-            intake2.setPower(-5);
 
         }
     }
