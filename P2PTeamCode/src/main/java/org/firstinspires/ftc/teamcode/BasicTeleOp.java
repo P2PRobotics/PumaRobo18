@@ -19,7 +19,8 @@ public class BasicTeleOp extends OpMode {
     private Servo liftgrab;
 
     //wheeled intake system
-    private DcMotor intake;
+    private DcMotor intake1;
+    private DcMotor intake2;
 
 
     @Override
@@ -44,8 +45,11 @@ public class BasicTeleOp extends OpMode {
 
         liftgrab= hardwareMap.servo.get("liftserv");
 
-        intake=hardwareMap.dcMotor.get("intake");
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake1=hardwareMap.dcMotor.get("intake1");
+        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        intake2=hardwareMap.dcMotor.get("intake2");
+        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
     }
@@ -108,10 +112,14 @@ public class BasicTeleOp extends OpMode {
         }
         //B for intake, Y for output
         if(gamepad1.b){
-            intake.setPower(5);
+            intake1.setPower(5);
+            intake2.setPower(5);
+
         }
         if(gamepad1.y){
-            intake.setPower(-5);
+            intake1.setPower(-5);
+            intake2.setPower(-5);
+
         }
     }
 }
