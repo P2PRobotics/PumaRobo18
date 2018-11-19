@@ -50,14 +50,14 @@ public interface GameConstants {
     double OUTER_FRONT_LANDER_POINT_Y = 35.75;
     double INNER_FRONT_LANDER_POINT_X = 70.25;
     double INNER_FRONT_LANDER_POINT_Y = 47.25;
-    double LEFT_IMAGE_X = 0;
-    double LEFT_IMAGE_Y = 70.25;
-    double RIGHT_IMAGE_X = 140.5;
-    double RIGHT_IMAGE_Y = 70.25;
-    double FRONT_IMAGE_X = 70.25;
-    double FRONT_IMAGE_Y = 0;
-    double BACK_IMAGE_X = 70.25;
-    double BACK_IMAGE_Y = 140.5;
+    double BLUE_ALLIANCE_WALL_IMAGE_X = 0;
+    double BLUE_ALLIANCE_WALL_IMAGE_Y = 70.25;
+    double RED_ALLIANCE_WALL_IMAGE_X = 140.5;
+    double RED_ALLIANCE_WALL_IMAGE_Y = 70.25;
+    double FRONT_WALL_IMAGE_X = 70.25;
+    double FRONT_WALL_IMAGE_Y = 0;
+    double BACK_WALL_IMAGE_X = 70.25;
+    double BACK_WALL_IMAGE_Y = 140.5;
 
 //    double FIELD_H = ;
 //    double FIELD_V = ;
