@@ -17,7 +17,7 @@ public class TeleOpAlt extends OpMode {
     private DcMotor liftmotor;
     private Servo liftgrab;
 
-    private DcMotor intake;
+    private DcMotor intakeMotor;
 
     private Servo placemarker; //?? double check if we need this
 
@@ -62,7 +62,6 @@ public class TeleOpAlt extends OpMode {
             lmotor2.setPower(Math.pow(trigger, 5));
             rmotor1.setPower(Math.pow(trigger, 5));
             rmotor2.setPower(Math.pow(trigger, 5));
-            return;
         }
         if (gamepad1.right_trigger > 0.05) {
             double trigger = gamepad1.right_trigger;
@@ -71,7 +70,6 @@ public class TeleOpAlt extends OpMode {
             lmotor2.setPower(Math.pow(-trigger, 5));
             rmotor1.setPower(Math.pow(-trigger, 5));
             rmotor2.setPower(Math.pow(-trigger, 5));
-            return;
         }
         double rawx = gamepad1.right_stick_x;
         double rawy = -gamepad1.right_stick_y;
@@ -101,14 +99,13 @@ public class TeleOpAlt extends OpMode {
         if(gamepad1.x){
             liftgrab.setPosition(-0.5);
         }
-        //B for intake, Y for output
-        if(gamepad1.b){
-            intake.setPower(5);
-        }
-        if(gamepad1.y){
-            intake.setPower(-5);
-        }
-
-
+        //B for intakeMotor, Y for output
+//        if(gamepad1.b){
+//            intakeMotor.setPower(1.0);
+//        } else if (gamepad1.y){
+//            intakeMotor.setPower(-1.0);
+//        } else {
+//            intakeMotor.setPower(0.0);
+//        }
     }
 }

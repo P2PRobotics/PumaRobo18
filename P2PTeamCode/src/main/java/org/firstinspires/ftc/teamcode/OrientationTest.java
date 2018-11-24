@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -13,20 +12,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-
 import java.util.Locale;
 
-import static org.firstinspires.ftc.teamcode.AutonomousUtil.adjustedSpeed;
-
-@Autonomous(name="MotorTest2",group="A")
-public final class MotorTest2 extends OpMode {
-    private DcMotor lmotor1;
-    private DcMotor lmotor2;
-    private DcMotor rmotor1;
-    private DcMotor rmotor2;
-
-    public double targetAngle;
-
+@Autonomous(name = "Orientation Test",group = "1")
+public class OrientationTest extends OpMode {
     // The IMU sensor object
     BNO055IMU imu;
 
@@ -34,17 +23,8 @@ public final class MotorTest2 extends OpMode {
     Orientation angles;
     Acceleration gravity;
 
-
-    public void init(){
-        lmotor1 = hardwareMap.dcMotor.get("m12");
-        lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lmotor2 = hardwareMap.dcMotor.get("m13");
-        lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rmotor1 = hardwareMap.dcMotor.get("m11");
-        rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rmotor2 = hardwareMap.dcMotor.get("m10");
-        rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        telemetry.update();
+    @Override
+    public void init() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -56,15 +36,20 @@ public final class MotorTest2 extends OpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
+        //angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        //gravity  = imu.getGravity();
+
         composeTelemetry();
-
-//        targetAngle = rotatedBy(angles.firstAngle,45);
-    }
-    public void start(){
-        //?? set up vuforia here??
-        // will vuforia be useful here? - makenna
     }
 
+    @Override
+    public void loop() {
+        telemetry.update();
+
+        double turningSpeed = adjustedSpeed(errorProportion(45 + 180, (angles.firstAngle + 180)));
+        telemetry.addData("Speed:",turningSpeed);
+        telemetry.addData("firstAngleAdjusted:",(angles.firstAngle + 180));
+    }
     private double error(double desired, double current) {
         return desired - current;
     }
@@ -73,52 +58,12 @@ public final class MotorTest2 extends OpMode {
         return error(desired, current) / desired;
     }
 
-    public void loop(){
-        telemetry.update();
-
-        double turningSpeed = adjustedSpeed(errorProportion(targetAngle, (angles.firstAngle)));
-        turnTo(targetAngle,turningSpeed);
-        telemetry.addData("Speed:",turningSpeed);
-        telemetry.addData("firstAngle:",(angles.firstAngle));
-        telemetry.addData("Target Angle:", targetAngle);
+    double adjustedSpeed(double speed) {
+        if (speed < -1.0) return -1.0;
+        else if (speed > 1.0) return 1.0;
+        else if (speed > -0.05 && speed < 0.05) return 0;
+        else return speed;
     }
-
-    public void turnTo(double angle, double power) {
-//        if (angle >= 0) {
-//            if (angles.firstAngle > angle)  {
-//                turnLeft(power);
-//            } else {
-//                turnRight(power);
-//            }
-//        } else {
-//            if (angles.firstAngle >= 0)  {
-//                if (angles.firstAngle > angle) {
-//                    turnLeft(power);
-//                } else {
-//                    turnRight(power);
-//                }
-//            } else {
-//                if (angles.firstAngle < 0) {
-//                    turnRight(power);
-//                } else {
-//                    turnLeft(power);
-//                }
-//            }
-//        }
-
-    }
-
-    public void turn(double power) {
-        double v = adjustedSpeed(power);
-        rmotor1.setPower(v);
-        rmotor2.setPower(-v);
-        lmotor1.setPower(v);
-        lmotor2.setPower(-v);
-    }
-
-
-
-
     void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
@@ -148,7 +93,7 @@ public final class MotorTest2 extends OpMode {
         telemetry.addLine()
                 .addData("heading", new Func<String>() {
                     @Override public String value() {
-                        return formatAngle(angles.angleUnit, angles.firstAngle);
+                        return formatAngle(angles.angleUnit, angles.firstAngle + 180);
                     }
                 })
                 .addData("roll", new Func<String>() {
@@ -177,11 +122,6 @@ public final class MotorTest2 extends OpMode {
                     }
                 });
     }
-
-    //----------------------------------------------------------------------------------------------
-    // Formatting
-    //----------------------------------------------------------------------------------------------
-
     String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
@@ -189,5 +129,4 @@ public final class MotorTest2 extends OpMode {
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
 }

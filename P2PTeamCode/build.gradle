@@ -2,5 +2,8 @@ apply plugin: 'java-library'
 
 sourceCompatibility = 7
 targetCompatibility = 7
+dependencies {
+    implementation 'junit:junit:4.12'
+}
 
 apply from: '../build.p2pcommon.gradle'
