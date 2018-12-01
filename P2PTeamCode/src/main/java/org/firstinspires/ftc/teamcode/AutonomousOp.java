@@ -26,7 +26,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         imu = initIMU(this.hardwareMap);
         headingController = new AngularPController(
                 () -> imu.getAngularOrientation().firstAngle,
-                1.0f,
+                2.0f,
                 1.0f,
                 0.2f
         );
@@ -35,13 +35,13 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         //vuforia.start();
         //check if ftc updated their VuMark resources!!
         headingController.calibrateTo(0.0f);
-        headingController.setDesired(45.0f);
+        headingController.setDesired(160.0f);
     }
     public void loop(){
         headingController.update();
         float turnRate = headingController.getControlValue();
         if (turnRate == Float.NaN) turn(0.0);
-        else turn(turnRate);
+        else turn(-turnRate);
         //detatch from lander
         //liftmotor.setPower(-3);
         //liftgrab.setPosition(-0.5);

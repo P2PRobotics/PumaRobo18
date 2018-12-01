@@ -22,14 +22,18 @@ public class BasicTeleOp extends BaseOp {
         //Forwards
         if (gamepad1.left_trigger > 0.05) {
             double trigger = gamepad1.left_trigger;
-            move(Math.pow(trigger, 5));
+            move(2);
             return;
+        } else {
+            move(0);
         }
         //Backwards
         if (gamepad1.right_trigger > 0.05) {
             double trigger = gamepad1.right_trigger;
-            move(-Math.pow(trigger, 5));
+            move(-2);
             return;
+        } else {
+            move(0);
         }
 
         double rawx = gamepad1.right_stick_x;

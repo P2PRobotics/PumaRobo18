@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,7 +21,7 @@ public class BaseOp extends OpMode {
 
     //wheeled intake system
     public DcMotor intake1;
-    public Servo intake2;
+    public CRServo intake2;
 
 
     public void init() {
@@ -50,7 +51,8 @@ public class BaseOp extends OpMode {
         intake1=hardwareMap.dcMotor.get("intake1");
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intake2=hardwareMap.servo.get("intake2");
+        intake2=hardwareMap.crservo.get("intake2");
+
 
         lmotor1.setPower(0);
         lmotor2.setPower(0);
@@ -80,9 +82,9 @@ public class BaseOp extends OpMode {
 
     public void raiseContainer(boolean raised){
         if(raised) {
-            intake2.setPosition(1);
+            //intake2.setPosition(1);
         } else {
-            intake2.setPosition(0);
+            //intake2.setPosition(0);
         }
     }
 
@@ -111,9 +113,9 @@ public class BaseOp extends OpMode {
     public void turn(double speed){
         double v = adjustedSpeed(speed);
         rmotor1.setPower(v);
-        rmotor2.setPower(-v);
+        rmotor2.setPower(v);
         lmotor1.setPower(v);
-        lmotor2.setPower(-v);
+        lmotor2.setPower(v);
     }
 
     public void move(double speed){
@@ -121,7 +123,7 @@ public class BaseOp extends OpMode {
         lmotor1.setPower(-v);
         lmotor2.setPower(-v);
         rmotor1.setPower(v);
-        rmotor1.setPower(v);
+        rmotor2.setPower(v);
     }
 
     static double adjustedSpeed(double speed) {
