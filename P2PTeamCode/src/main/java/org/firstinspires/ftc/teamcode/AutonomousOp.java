@@ -13,20 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "AutonomousOp" , group = "AAAAAARP")
 public class AutonomousOp extends BaseOp implements GameConstants {
-    //drivetrain
-    private DcMotor lmotor1;
-    private DcMotor lmotor2;
-    private DcMotor rmotor1;
-    private DcMotor rmotor2;
-
-    private DcMotor liftmotor;
-    private Servo liftgrab;
-
-
-    private DcMotor intake;
-
-    private Servo placemarker; //?? double check if we need this
-
+ 
     //add sensors here!!
     //private OrientationSensor orientationSensor;
     //private VuforiaHelper vuforia;

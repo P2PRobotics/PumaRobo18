@@ -8,19 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="BasicTeleOp",group="D")
 public class BasicTeleOp extends BaseOp {
-    //drivetrain
-    private DcMotor lmotor1;
-    private DcMotor lmotor2;
-    private DcMotor rmotor1;
-    private DcMotor rmotor2;
-
-    //lifter and lander (servo latches on to lander, motor extends/retracts arm)
-    private DcMotor liftmotor;
-    private Servo liftgrab;
-
-    //wheeled intake system
-    private DcMotor intake1;
-    private Servo intake2;
 
 
     @Override

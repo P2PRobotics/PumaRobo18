@@ -8,18 +8,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BaseOp extends OpMode {
 
     //drivetrain
-    private DcMotor lmotor1;
-    private DcMotor lmotor2;
-    private DcMotor rmotor1;
-    private DcMotor rmotor2;
+    public DcMotor lmotor1;
+    public DcMotor lmotor2;
+    public DcMotor rmotor1;
+    public DcMotor rmotor2;
+    private DcMotor[] motors = new DcMotor[]{lmotor1,lmotor2,rmotor1,rmotor2};
 
     //lifter and lander (servo latches on to lander, motor extends/retracts arm)
-    private DcMotor liftmotor;
-    private Servo liftgrab;
+    public DcMotor liftmotor;
+    public Servo liftgrab;
 
     //wheeled intake system
-    private DcMotor intake1;
-    private Servo intake2;
+    public DcMotor intake1;
+    public Servo intake2;
 
 
     public void init() {
@@ -54,6 +55,36 @@ public class BaseOp extends OpMode {
     public void start() {}
     public void loop() {}
 
+//    public void wheelIn(boolean in){
+//        if(in){
+//            intake1.setPower(0.75);
+//        } else {
+//            intake1.setPower(0);
+//        }
+//    }
 
+    public void turn(double speed){
+        double v = adjustedSpeed(speed);
+        rmotor1.setPower(v);
+        rmotor2.setPower(-v);
+        lmotor1.setPower(v);
+        lmotor2.setPower(-v);
+    }
 
+//    public void move(double speed){
+//        double v = adjustedSpeed(speed);
+//        for (DcMotor motor : motors) {
+//            motor.setPower(v);
+//        }
+//    }
+    
+    static double adjustedSpeed(double speed) {
+        if (speed < -1.0) return -1.0;
+        else if (speed > 1.0) return 1.0;
+        else if (speed < 0.2 && speed > 0) return 0.2;
+        else if (speed > -0.2 && speed < 0) return -0.2;
+        else return speed;
+        //Adjust speed so it doesn't slow down too much!!!!!!!
+    }
+//hi guys ;) <3 mak
 }
