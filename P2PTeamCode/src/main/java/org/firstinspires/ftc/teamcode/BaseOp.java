@@ -52,6 +52,12 @@ public class BaseOp extends OpMode {
 
         intake2=hardwareMap.servo.get("intake2");
 
+        lmotor1.setPower(0);
+        lmotor2.setPower(0);
+        rmotor1.setPower(0);
+        rmotor2.setPower(0);
+        liftMotor.setPower(0);
+        intake1.setPower(0);
     }
     public void start() {}
     public void loop() {}
@@ -66,7 +72,7 @@ public class BaseOp extends OpMode {
 
     public void wheelOut(boolean out) {
         if(out){
-            intake1.setPower(0.75);
+            intake1.setPower(-0.75);
         } else {
             intake1.setPower(0);
         }

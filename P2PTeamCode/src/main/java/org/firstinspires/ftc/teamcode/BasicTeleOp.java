@@ -2,24 +2,23 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="BasicTeleOp",group="D")
+@TeleOp(name = "BasicTeleOp", group = "D")
 public class BasicTeleOp extends BaseOp {
 
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
     }
-    public void start(){
+
+    public void start() {
 
     }
+
     @Override
     public void loop() {
         //sets initial power to 0 so motors don't move upon initialization
-        lmotor1.setPower(0);
-        lmotor2.setPower(0);
-        rmotor1.setPower(0);
-        rmotor2.setPower(0);
+
         //Forwards
         if (gamepad1.left_trigger > 0.05) {
             double trigger = gamepad1.left_trigger;
@@ -45,32 +44,28 @@ public class BasicTeleOp extends BaseOp {
         }
         //RB raises extender, LB lowers. maybe adjust power?
         if (gamepad2.right_bumper) {
-            lift(5);
-        }
-        if (gamepad2.left_bumper) {
-            lift(-5);
+            lift(1);
+        } else if (gamepad2.left_bumper) {
+            lift(-1);
         }
         //A to open grabber, x to close
         if (gamepad2.a) {
             latchBar(false);
-        }
-        if (gamepad2.x) {
+        } else if (gamepad2.x) {
             latchBar(true);
         }
         //B for intake, Y for output
         if (gamepad2.b) {
             wheelOut(false);
             wheelIn(true);
-        }
-        if (gamepad2.y) {
+        } else if (gamepad2.y) {
             wheelIn(false);
             wheelOut(true);
         }
         //D-Pad to raise dish up and down
         if (gamepad2.dpad_up) {
             raiseContainer(true);
-        }
-        if (gamepad2.dpad_down) {
+        } else if (gamepad2.dpad_down) {
             raiseContainer(false);
         }
     }
