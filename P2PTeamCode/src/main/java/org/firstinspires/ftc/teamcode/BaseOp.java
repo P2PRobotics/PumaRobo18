@@ -6,20 +6,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class BaseOp extends OpMode {
-    private boolean latchedBar = true;
-    private boolean latchedCup = true;
-    private boolean in = false;
-    private boolean out = false;
 
     //drivetrain
     public DcMotor lmotor1;
     public DcMotor lmotor2;
     public DcMotor rmotor1;
     public DcMotor rmotor2;
-    private DcMotor[] wheelMotors = new DcMotor[]{lmotor1,lmotor2,rmotor1,rmotor2};
 
     //lifter and lander (servo latches on to lander, motor extends/retracts arm)
-    public DcMotor liftmotor;
+    public DcMotor liftMotor;
     public Servo latchBarM;
     public Servo latchCupM;
 
@@ -46,8 +41,8 @@ public class BaseOp extends OpMode {
 
         //make sure these match what's in the config
 
-        liftmotor= hardwareMap.dcMotor.get("liftmo");
-        liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor= hardwareMap.dcMotor.get("liftmo");
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         latchBarM = hardwareMap.servo.get("latchBarM");
         latchCupM = hardwareMap.servo.get("latchCupM");
@@ -61,50 +56,43 @@ public class BaseOp extends OpMode {
     public void start() {}
     public void loop() {}
 
-
-    public boolean getWheelIn() {
-        return in;
-    }
-    public boolean getWheelOut() {
-        return out;
-    }
-    public boolean getLatchedCup() {
-        return latchedCup;
-    }
-    public boolean getLatchedBar() {
-        return latchedBar;
-    }
-    public void setWheelIn(boolean in) {
-        this.in = in;
-    }
-    public void setWheelOut(boolean out) {
-        this.out = out;
-    }
-    public void setLatchedCup(boolean latchedCup) {
-        this.latchedCup = latchedCup;
-    }
-    public void setLatchedBar(boolean latchedBar) {
-        this.latchedBar = latchedBar;
-    }
-
-    public void wheelCheck(){
+    public void wheelIn(boolean in){
         if(in){
             intake1.setPower(0.75);
-        } else if (out) {
-            intake1.setPower(-0.75);
         } else {
             intake1.setPower(0);
         }
     }
 
-    public void latchBar() {
+    public void wheelOut(boolean out) {
+        if(out){
+            intake1.setPower(0.75);
+        } else {
+            intake1.setPower(0);
+        }
+    }
+
+    public void raiseContainer(boolean raised){
+        if(raised) {
+            intake2.setPosition(1);
+        } else {
+            intake2.setPosition(0);
+        }
+    }
+
+
+    public void lift(double speed){
+        liftMotor.setPower(speed);
+    }
+
+    public void latchBar(boolean latchedBar) {
         if(latchedBar) {
             latchBarM.setPosition(0.5);
         } else {
             latchBarM.setPosition(0);
         }
     }
-    public void latchCup(){
+    public void latchCup(boolean latchedCup){
         if(latchedCup){
             latchCupM.setPosition(0.5);
         } else {
@@ -124,9 +112,10 @@ public class BaseOp extends OpMode {
 
     public void move(double speed){
         double v = adjustedSpeed(speed);
-        for (DcMotor motor : wheelMotors) {
-            motor.setPower(v);
-        }
+        lmotor1.setPower(-v);
+        lmotor2.setPower(-v);
+        rmotor1.setPower(v);
+        rmotor1.setPower(v);
     }
 
     static double adjustedSpeed(double speed) {

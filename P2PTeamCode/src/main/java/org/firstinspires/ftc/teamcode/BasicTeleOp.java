@@ -24,68 +24,58 @@ public class BasicTeleOp extends BaseOp {
         lmotor2.setPower(0);
         rmotor1.setPower(0);
         rmotor2.setPower(0);
-        //pivoting and turning, uses left and right triggers
+        //Forwards
         if (gamepad1.left_trigger > 0.05) {
             double trigger = gamepad1.left_trigger;
-            //move forward w left trigger
-            lmotor1.setPower(-Math.pow(trigger, 5));
-            lmotor2.setPower(-Math.pow(trigger, 5));
-            rmotor1.setPower(Math.pow(trigger, 5));
-            rmotor2.setPower(Math.pow(trigger, 5));
+            move(Math.pow(trigger, 5));
             return;
         }
+        //Backwards
         if (gamepad1.right_trigger > 0.05) {
             double trigger = gamepad1.right_trigger;
-            //move backward w right trigger
-            lmotor1.setPower(Math.pow(trigger, 5));
-            lmotor2.setPower(Math.pow(trigger, 5));
-            rmotor1.setPower(-Math.pow(trigger, 5));
-            rmotor2.setPower(-Math.pow(trigger, 5));
+            move(-Math.pow(trigger, 5));
             return;
         }
+
         double rawx = gamepad1.right_stick_x;
         double rawy = -gamepad1.right_stick_y;
         double x = Math.pow(rawx, 7); //adjust sensitivity?
         double y = Math.pow(rawy, 7);
-        //pivot w right joystick
+        //Turning WIP might work
         if (x != 0 || y != 0) {
             double n = ((x + y) / Math.sqrt(2.0)); // n is the power of the motors in the +x +y direction
             //double m = ((x - y) / Math.sqrt(2.0)); // m is the power of the motors in the +x -y direction
-
-            lmotor1.setPower(n);
-            lmotor2.setPower(n);
-            rmotor1.setPower(n);
-            rmotor2.setPower(n);
+            turn(n);
         }
         //RB raises extender, LB lowers. maybe adjust power?
         if (gamepad2.right_bumper) {
-            liftmotor.setPower(5);
+            lift(5);
         }
         if (gamepad2.left_bumper) {
-            liftmotor.setPower(-5);
+            lift(-5);
         }
         //A to open grabber, x to close
         if (gamepad2.a) {
-            liftgrab.setPosition(0.5);
+            latchBar(false);
         }
         if (gamepad2.x) {
-            liftgrab.setPosition(-0.5);
+            latchBar(true);
         }
         //B for intake, Y for output
         if (gamepad2.b) {
-            intake1.setPower(5);
-
+            wheelOut(false);
+            wheelIn(true);
         }
         if (gamepad2.y) {
-            intake1.setPower(-5);
-
+            wheelIn(false);
+            wheelOut(true);
         }
         //D-Pad to raise dish up and down
         if (gamepad2.dpad_up) {
-            intake2.setPosition(0.5);
+            raiseContainer(true);
         }
         if (gamepad2.dpad_down) {
-            intake2.setPosition(-0.5);
+            raiseContainer(false);
         }
     }
 }
