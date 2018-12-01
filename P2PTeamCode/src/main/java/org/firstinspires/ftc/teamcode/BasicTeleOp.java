@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="BasicTeleOp",group="D")
-public class BasicTeleOp extends OpMode {
+public class BasicTeleOp extends BaseOp {
     //drivetrain
     private DcMotor lmotor1;
     private DcMotor lmotor2;
@@ -25,33 +25,7 @@ public class BasicTeleOp extends OpMode {
 
     @Override
     public void init(){
-        //initializes motors, retrieve configs
-        lmotor1 = hardwareMap.dcMotor.get("m12");
-        lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-       lmotor2 = hardwareMap.dcMotor.get("m13");
-       lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-       lmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        rmotor1 = hardwareMap.dcMotor.get("m11");
-        rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        rmotor2 = hardwareMap.dcMotor.get("m10");
-        rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //make sure these match what's in the config
-
-        liftmotor= hardwareMap.dcMotor.get("liftmo");
-        liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        liftgrab= hardwareMap.servo.get("liftserv");
-
-        intake1=hardwareMap.dcMotor.get("intake1");
-        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        intake2=hardwareMap.servo.get("intake2");
-
+        super.init();
     }
     public void start(){
 

@@ -7,11 +7,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.sun.xml.internal.rngom.parse.host.Base;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "AutonomousOp" , group = "AAAAAARP")
-public class AutonomousOp extends OpMode implements GameConstants {
+public class AutonomousOp extends BaseOp implements GameConstants {
     //drivetrain
     private DcMotor lmotor1;
     private DcMotor lmotor2;
@@ -34,25 +35,7 @@ public class AutonomousOp extends OpMode implements GameConstants {
     //if you do states, don't forget to make a state.java file!!
     //don't forget your important variables here
     public void init(){
-        lmotor1 = hardwareMap.dcMotor.get("m12");
-        lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        lmotor2 = hardwareMap.dcMotor.get("m13");
-        lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        rmotor1 = hardwareMap.dcMotor.get("m11");
-        rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        rmotor2 = hardwareMap.dcMotor.get("m10");
-        rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        //configure other servos and motors here
-        liftmotor= hardwareMap.dcMotor.get("liftmo");
-        liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        liftgrab= hardwareMap.servo.get("liftserv");
-
-
+        super.init();
     }
     public void start(){
         //vuforia.start();
