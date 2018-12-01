@@ -6,17 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class BaseOp extends OpMode {
+    private boolean latchedBar = true;
+    private boolean latchedCup = true;
+    private boolean in = false;
+    private boolean out = false;
 
     //drivetrain
     public DcMotor lmotor1;
     public DcMotor lmotor2;
     public DcMotor rmotor1;
     public DcMotor rmotor2;
-    private DcMotor[] motors = new DcMotor[]{lmotor1,lmotor2,rmotor1,rmotor2};
+    private DcMotor[] wheelMotors = new DcMotor[]{lmotor1,lmotor2,rmotor1,rmotor2};
 
     //lifter and lander (servo latches on to lander, motor extends/retracts arm)
     public DcMotor liftmotor;
-    public Servo liftgrab;
+    public Servo latchBarM;
+    public Servo latchCupM;
 
     //wheeled intake system
     public DcMotor intake1;
@@ -44,7 +49,8 @@ public class BaseOp extends OpMode {
         liftmotor= hardwareMap.dcMotor.get("liftmo");
         liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftgrab= hardwareMap.servo.get("liftserv");
+        latchBarM = hardwareMap.servo.get("latchBarM");
+        latchCupM = hardwareMap.servo.get("latchCupM");
 
         intake1=hardwareMap.dcMotor.get("intake1");
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -55,13 +61,58 @@ public class BaseOp extends OpMode {
     public void start() {}
     public void loop() {}
 
-//    public void wheelIn(boolean in){
-//        if(in){
-//            intake1.setPower(0.75);
-//        } else {
-//            intake1.setPower(0);
-//        }
-//    }
+
+    public boolean getWheelIn() {
+        return in;
+    }
+    public boolean getWheelOut() {
+        return out;
+    }
+    public boolean getLatchedCup() {
+        return latchedCup;
+    }
+    public boolean getLatchedBar() {
+        return latchedBar;
+    }
+    public void setWheelIn(boolean in) {
+        this.in = in;
+    }
+    public void setWheelOut(boolean out) {
+        this.out = out;
+    }
+    public void setLatchedCup(boolean latchedCup) {
+        this.latchedCup = latchedCup;
+    }
+    public void setLatchedBar(boolean latchedBar) {
+        this.latchedBar = latchedBar;
+    }
+
+    public void wheelCheck(){
+        if(in){
+            intake1.setPower(0.75);
+        } else if (out) {
+            intake1.setPower(-0.75);
+        } else {
+            intake1.setPower(0);
+        }
+    }
+
+    public void latchBar() {
+        if(latchedBar) {
+            latchBarM.setPosition(0.5);
+        } else {
+            latchBarM.setPosition(0);
+        }
+    }
+    public void latchCup(){
+        if(latchedCup){
+            latchCupM.setPosition(0.5);
+        } else {
+            latchCupM.setPosition(0);
+        }
+    }
+
+
 
     public void turn(double speed){
         double v = adjustedSpeed(speed);
@@ -71,13 +122,13 @@ public class BaseOp extends OpMode {
         lmotor2.setPower(-v);
     }
 
-//    public void move(double speed){
-//        double v = adjustedSpeed(speed);
-//        for (DcMotor motor : motors) {
-//            motor.setPower(v);
-//        }
-//    }
-    
+    public void move(double speed){
+        double v = adjustedSpeed(speed);
+        for (DcMotor motor : wheelMotors) {
+            motor.setPower(v);
+        }
+    }
+
     static double adjustedSpeed(double speed) {
         if (speed < -1.0) return -1.0;
         else if (speed > 1.0) return 1.0;
@@ -86,5 +137,5 @@ public class BaseOp extends OpMode {
         else return speed;
         //Adjust speed so it doesn't slow down too much!!!!!!!
     }
-//hi guys ;) <3 mak
+
 }
