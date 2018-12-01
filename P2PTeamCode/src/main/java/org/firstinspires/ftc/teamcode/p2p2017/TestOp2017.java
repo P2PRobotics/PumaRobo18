@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.p2p2017;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Disabled
 public class TestOp2017 extends OpMode {
 
     DcMotor motor1;

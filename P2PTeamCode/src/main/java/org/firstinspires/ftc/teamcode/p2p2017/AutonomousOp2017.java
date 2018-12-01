@@ -7,12 +7,14 @@ import java.util.Stack;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "AutonomousOp2017", group = "AAAAAARP")
+@Disabled
 public class AutonomousOp2017 extends OpMode implements RobotConstants2017 {
     // Actuators
     private DcMotor motor1;
