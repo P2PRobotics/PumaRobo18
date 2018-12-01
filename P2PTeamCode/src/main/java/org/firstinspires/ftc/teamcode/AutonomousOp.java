@@ -25,7 +25,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         super.init();
         imu = initIMU(this.hardwareMap);
         headingController = new AngularPController(
-                () -> imu.getAngularOrientation().thirdAngle,
+                () -> imu.getAngularOrientation().firstAngle,
                 1.0f,
                 1.0f,
                 0.2f
