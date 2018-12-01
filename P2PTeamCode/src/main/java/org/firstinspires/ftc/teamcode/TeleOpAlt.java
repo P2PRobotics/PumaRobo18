@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name="TeleOpAlt",group="D")
 public class TeleOpAlt extends OpMode {
     //alternate tele op class w diff controls. depends on driver comfort
+    //use BasicTeleOp for now!
     private DcMotor lmotor1;
     private DcMotor lmotor2;
     private DcMotor rmotor1;

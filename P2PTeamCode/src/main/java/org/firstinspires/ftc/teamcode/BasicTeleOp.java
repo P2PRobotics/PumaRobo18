@@ -20,6 +20,7 @@ public class BasicTeleOp extends OpMode {
 
     //wheeled intake system
     private DcMotor intake1;
+    private Servo intake2;
 
 
     @Override
@@ -39,6 +40,8 @@ public class BasicTeleOp extends OpMode {
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        //make sure these match what's in the config
+
         liftmotor= hardwareMap.dcMotor.get("liftmo");
         liftmotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -47,14 +50,16 @@ public class BasicTeleOp extends OpMode {
         intake1=hardwareMap.dcMotor.get("intake1");
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        intake2=hardwareMap.servo.get("intake2");
+
     }
     public void start(){
 
     }
     @Override
-    public void loop(){
+    public void loop() {
         //sets initial power to 0 so motors don't move upon initialization
-       lmotor1.setPower(0);
+        lmotor1.setPower(0);
         lmotor2.setPower(0);
         rmotor1.setPower(0);
         rmotor2.setPower(0);
@@ -74,12 +79,12 @@ public class BasicTeleOp extends OpMode {
             lmotor1.setPower(Math.pow(trigger, 5));
             lmotor2.setPower(Math.pow(trigger, 5));
             rmotor1.setPower(-Math.pow(trigger, 5));
-           rmotor2.setPower(-Math.pow(trigger, 5));
+            rmotor2.setPower(-Math.pow(trigger, 5));
             return;
         }
         double rawx = gamepad1.right_stick_x;
         double rawy = -gamepad1.right_stick_y;
-        double x= Math.pow(rawx, 7); //adjust sensitivity?
+        double x = Math.pow(rawx, 7); //adjust sensitivity?
         double y = Math.pow(rawy, 7);
         //pivot w right joystick
         if (x != 0 || y != 0) {
@@ -92,27 +97,34 @@ public class BasicTeleOp extends OpMode {
             rmotor2.setPower(n);
         }
         //RB raises extender, LB lowers. maybe adjust power?
-        if(gamepad1.right_bumper){
+        if (gamepad2.right_bumper) {
             liftmotor.setPower(5);
         }
-        if(gamepad1.left_bumper){
+        if (gamepad2.left_bumper) {
             liftmotor.setPower(-5);
         }
         //A to open grabber, x to close
-        if(gamepad1.a){
+        if (gamepad2.a) {
             liftgrab.setPosition(0.5);
         }
-        if(gamepad1.x){
+        if (gamepad2.x) {
             liftgrab.setPosition(-0.5);
         }
         //B for intake, Y for output
-        if(gamepad1.b){
+        if (gamepad2.b) {
             intake1.setPower(5);
 
         }
-        if(gamepad1.y){
+        if (gamepad2.y) {
             intake1.setPower(-5);
 
+        }
+        //D-Pad to raise dish up and down
+        if (gamepad2.dpad_up) {
+            intake2.setPosition(0.5);
+        }
+        if (gamepad2.dpad_down) {
+            intake2.setPosition(-0.5);
         }
     }
 }
