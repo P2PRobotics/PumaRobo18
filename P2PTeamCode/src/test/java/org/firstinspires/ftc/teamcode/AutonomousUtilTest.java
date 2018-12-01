@@ -2,8 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import static org.firstinspires.ftc.teamcode.AutonomousUtil.*;
+import static org.firstinspires.ftc.teamcode.AutonomousUtil.adjustedSpeed;
+import static org.firstinspires.ftc.teamcode.AutonomousUtil.angularDifference;
+import static org.firstinspires.ftc.teamcode.AutonomousUtil.closeEnough;
+import static org.firstinspires.ftc.teamcode.AutonomousUtil.rotatedBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AutonomousUtilTest {
 

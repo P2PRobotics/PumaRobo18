@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-
 import java.util.Locale;
 
 import static org.firstinspires.ftc.teamcode.AutonomousUtil.adjustedSpeed;

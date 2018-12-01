@@ -1,17 +1,17 @@
 package org.firstinspires.ftc.teamcode.p2p2017;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
 
 @Autonomous(name = "AutonomousOp2017", group = "AAAAAARP")
 @Disabled
