@@ -11,18 +11,17 @@ import org.pumatech.physics.Material;
 import org.pumatech.physics.Polygon;
 import org.pumatech.physics.Vec2;
 
-public class Field {
+public class Field2018 {
 
     private List<Body> walls;
     private List<Body> glyphs;
-    private List<Body> crypto;
     private List<Body> jewels;
     private List<Body> silverBalls;
     private Body crater1;
     private Body crater2;
 
-    public Field() {
-        walls = new LinkedList<Body>();
+    public Field2018() {
+        walls = new LinkedList<>();
         Vec2[] verticeshoriz = {new Vec2(72, 10), new Vec2(-72, 10), new Vec2(-72, -10), new Vec2(72, -10)};
         Vec2[] verticesvert = {new Vec2(10, 92), new Vec2(-10, 92), new Vec2(-10, -92), new Vec2(10, -92)};
         Body wall1 = new Polygon(verticeshoriz, Material.IMMOVEABLE);

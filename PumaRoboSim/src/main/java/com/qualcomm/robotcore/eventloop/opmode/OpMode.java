@@ -5,6 +5,7 @@ import org.pumatech.robotcore.external.BasicTelemetry;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.pumatech.robotcore.external.GUITelemetry;
 
 public abstract class OpMode {
 
@@ -20,6 +21,9 @@ public abstract class OpMode {
     public void start() {
     }
 
+    public final void requestOpModeStop() {
+    }
+
     public void stop() {
     }
 
@@ -29,7 +33,7 @@ public abstract class OpMode {
 
     public void setup(HardwareMap hardwareMap, Gamepad gamepad1, Gamepad gamepad2) {
         this.hardwareMap = hardwareMap;
-        telemetry = new BasicTelemetry();
+        telemetry = new GUITelemetry();
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
     }
@@ -38,9 +42,7 @@ public abstract class OpMode {
         telemetry.update();
     }
 
-    public void resetStartTime() {
-
-    }
+    public void resetStartTime() { }
 
     public double getRuntime() {
         return 0;

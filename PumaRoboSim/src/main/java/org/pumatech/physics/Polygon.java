@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Polygon extends Body {
 
     private Vec2 pos;
-    private double dir;
+    private volatile double dir;
     private Vec2[] vertices;
     private Vec2[] normals; // Inner normals
 

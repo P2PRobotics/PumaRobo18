@@ -62,4 +62,11 @@ public interface GameConstants {
 //    double FIELD_H = ;
 //    double FIELD_V = ;
     //don't forget to add autonomous variables here!
+    String VUFORIA_KEY_P2PROBOTICSFTC =
+        "AbAFBSH/////AAABmUmB2GBj3E3Lp169iJ8EyJ4HnypcGXIQtM/SzDVCHvBFnAxejLKQdmXGBS2dU+ovBkYVgj4" +
+            "ynnHL5A3KsUcLID46dfcQ5StAswi8YmexAA3RRc1WjNedgQ40kGVJN4pzEDPwcERn+FBPNy7V7+YGPivTGj" +
+            "zGnItUVSCkoujmHg19qoL5QvAy3ZGBYwkJZX8cu6Q3dNDWYpPPE+NbR6RqbGz5P+3WyTCzZTHDctBiEfolV" +
+            "PO8WAJivG73fdV64LelP5sH3FioYdHSG2SmhwRXsZLvhWUxyA2Yxbcgqu6HXf7T6j9VJr3iSDukvi4QpC2l" +
+            "q8RReMjqlsC/pkGpnJeGwgh+8OuLXPf2qESs7bjFocRb";
+
 }

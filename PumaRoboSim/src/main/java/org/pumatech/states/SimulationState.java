@@ -10,11 +10,13 @@ import java.awt.event.MouseWheelEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.pumatech.field.Field;
+import org.pumatech.field.Field2018;
 import org.pumatech.physics.Body;
 import org.pumatech.physics.PhysicsEngine;
 import org.pumatech.physics.Vec2;
 import org.pumatech.robot.Robot;
+import org.pumatech.robot.Robot2017;
+import org.pumatech.robot.SimPushbot;
 import org.pumatech.simulator.Camera;
 import org.pumatech.simulator.DriverStation;
 
@@ -31,7 +33,7 @@ public class SimulationState extends State {
     private Body viewer; // Sets the center of the camera view (moves around with arrow keys)
 
     private Robot robot;
-    private Field field;
+    private Field2018 field;
     public static List<Controller> gamepads;
 
     private boolean startPressed;
@@ -39,8 +41,10 @@ public class SimulationState extends State {
     public SimulationState() {
         engine = new PhysicsEngine();
         // Initialize robot and field
-        robot = new Robot(new Vec2(57, 57), engine, 9);
-        field = new Field();
+//        robot = new RobotHrm(new Vec2(57, 57), engine, 9);
+//        robot = new Robot2017(new Vec2(57, 57), engine);
+        robot = new SimPushbot(new Vec2(57, 57), engine);
+        field = new Field2018();
 
         startPressed = false;
 
@@ -102,12 +106,12 @@ public class SimulationState extends State {
         ds = new DriverStation(robot, field);
 
         // Use JInput to discover input devices
-        gamepads = new LinkedList<Controller>();
+        gamepads = new LinkedList<>();
         System.out.println("Searching for input devices...");
         Controller[] ca = ControllerEnvironment.getDefaultEnvironment().getControllers();
         for (Controller c : ca) {
             System.out.println(c);
-            if (c.getType() == Controller.Type.GAMEPAD)
+            if ((c.getType() == Controller.Type.GAMEPAD) || (c.getType() == Controller.Type.KEYBOARD))
                 gamepads.add(c);
         }
     }

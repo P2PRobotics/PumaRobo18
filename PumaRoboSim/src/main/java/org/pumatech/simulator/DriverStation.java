@@ -9,10 +9,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-import org.firstinspires.ftc.teamcode.TeleOpAlt;
-import org.pumatech.robotcore.external.GUITelemetry;
 import org.firstinspires.ftc.teamcode.p2p2017.BasicTeleOp2017;
-import org.pumatech.field.Field;
+import org.pumatech.robotcore.external.GUITelemetry;
+import org.pumatech.field.Field2018;
 import org.pumatech.physics.Vec2;
 import org.pumatech.robot.Robot;
 
@@ -30,13 +29,13 @@ public class DriverStation {
     private boolean show; // boolean for whether DS is shown (toggles with tab)
     private OpMode opmode; // Currently running opmode
     private Robot robot; // Will be used to initialize opmode and reset robot on restart
-    private Field field; // Will be used to reset the field on restart
+    private Field2018 field; // Will be used to reset the field on restart
     private Gamepad gamepad1, gamepad2;
     private List<Class<? extends OpMode>> teleopOpModes, autonomousOpModes;
     private boolean hasInit, isRun;
     private GUITelemetry telemetry;
 
-    public DriverStation(Robot robot, Field field) {
+    public DriverStation(Robot robot, Field2018 field) {
         this.robot = robot;
         this.field = field;
         show = false; // DS starts hidden
@@ -62,8 +61,10 @@ public class DriverStation {
 
         // Initialize opmode and connect it to robot and gamepads (and telemetry later)
         //opmode = new Autonomous2017();
-        opmode = new BasicTeleOp2017();
+//        opmode = new BasicTeleOp2017();
 //        opmode = new TeleOpAlt();
+//        opmode = new PushbotAutoDriveByTime_Linear();
+        opmode = new PushbotAutoDriveByGyro_Linear();
         opmode.setup(robot.getHardwareMap(), gamepad1, gamepad2);
         opmode.init();
         opmode.start();

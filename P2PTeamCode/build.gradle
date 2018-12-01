@@ -1,9 +1,13 @@
 apply plugin: 'java-library'
 
-sourceCompatibility = 7
-targetCompatibility = 7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 dependencies {
-    implementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation group: 'com.pholser', name: 'junit-quickcheck-generators', version: '0.8.1'
+    testImplementation group: 'com.pholser', name: 'junit-quickcheck-core', version: '0.8.1'
 }
 
 apply from: '../build.p2pcommon.gradle'

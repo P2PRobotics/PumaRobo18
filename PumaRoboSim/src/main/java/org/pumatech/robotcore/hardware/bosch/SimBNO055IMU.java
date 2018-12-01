@@ -67,7 +67,9 @@ public class SimBNO055IMU implements HardwareDevice, BNO055IMU {
 
     @Override
     public Orientation getAngularOrientation() {
-        return null;
+        Orientation o = new Orientation();
+        o.firstAngle = (float)(b.direction());
+        return o;
     }
 
     @Override
