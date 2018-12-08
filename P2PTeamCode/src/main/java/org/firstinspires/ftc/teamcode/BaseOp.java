@@ -115,23 +115,26 @@ public class BaseOp extends OpMode {
 
     public void turn(double speed) {
         double v = adjustedSpeed(speed);
-        double curPowRm1 = rmotor1.getPower();
-        if ((Math.abs(curPowRm1) + deltamax) > 1.0)
-            rmotor1.setPower(v);
-        rmotor2.setPower(v);
-        lmotor1.setPower(v);
-        lmotor2.setPower(v);
+        lmotor1.setPower(adjustedMotor(v, lmotor1));
+        lmotor2.setPower(adjustedMotor(v, lmotor2));
+        rmotor1.setPower(adjustedMotor(v, rmotor1));
+        rmotor2.setPower(adjustedMotor(v, rmotor2));
     }
 
     public void move(double speed) {
-        double v = adjustedSpeed(speed);
-        lmotor1.setPower(-v);
-        lmotor2.setPower(-v);
-        rmotor1.setPower(v);
-        rmotor2.setPower(v);
+        double x = adjustedSpeed(speed);
+        lmotor1.setPower(-x);
+        lmotor2.setPower(-x);
+        rmotor1.setPower(x);
+        rmotor2.setPower(x);
 
     }
-
+    public double adjustedMotor(double adjustedSpeed, DcMotor m) {
+        double currentPower = m.getPower();
+        double delta = adjustedSpeed - currentPower;
+        double power = (Math.abs(delta) > deltamax) ? (currentPower + (deltamax * Math.signum(delta))) : (currentPower + delta);
+        return power;
+    }
     static double adjustedSpeed(double speed) {
         if (speed < -1.0) return -1.0;
         else if (speed > 1.0) return 1.0;
