@@ -14,7 +14,7 @@ public class EncoderTest extends OpMode {
     @Override
     public void init() {
         motor = hardwareMap.dcMotor.get("m");
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         motor.setPower(0);
@@ -30,7 +30,7 @@ public class EncoderTest extends OpMode {
         {
             motor.setPower(0);
         }
-        telemetry.addData("Encoder", (360/1120) * motor.getCurrentPosition();
+        telemetry.addData("Encoder", (360/1120) * motor.getCurrentPosition());
         telemetry.update();
     }
 }

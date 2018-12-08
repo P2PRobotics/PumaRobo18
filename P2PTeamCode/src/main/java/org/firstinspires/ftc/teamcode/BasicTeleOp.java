@@ -30,29 +30,25 @@ public class BasicTeleOp extends BaseOp {
         if (x != 0 || y != 0) {
             n = ((x + y) / Math.sqrt(2.0)); // n is the power of the motors in the +x +y direction
             //double m = ((x - y) / Math.sqrt(2.0)); // m is the power of the motors in the +x -y direction
-            move(n);
+            move(-n);
         }
         //left turn
         if (gamepad1.left_trigger > 0.005) {
             double trigger = gamepad1.left_trigger;
-            //move(2);
-            turn(2);
-            move(n);
-
+            //maybe use a constant number for turning--depends on driver comfort
+            turn(trigger);
             return;
-        } else {
-            turn(0);
         }
         //turning right
-        if (gamepad1.right_trigger > 0.005) {
+        else if (gamepad1.right_trigger > 0.005) {
             double trigger = gamepad1.right_trigger;
             //move(-2);
-            turn(-2);
-            move(n);
+            turn(-trigger);
             return;
         } else {
             turn(0);
         }
+
 
 
         //RB raises extender, LB lowers.
@@ -79,7 +75,7 @@ public class BasicTeleOp extends BaseOp {
         if (gamepad2.dpad_up) {
             raiseContainer(true);
         } else if (gamepad2.dpad_down) {
-            raiseContainer(false);
+            lowerContainer(true);
         }
     }
 }

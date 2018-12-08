@@ -87,7 +87,15 @@ public class BaseOp extends OpMode {
         if (raised) {
             intake2.setPower(0.5);
         } else {
+            intake2.setPower(0);
+        }
+    }
+    public void lowerContainer(boolean lowered){
+        if(lowered){
             intake2.setPower(-0.5);
+        }
+        else{
+            intake2.setPower(0);
         }
     }
 
@@ -122,19 +130,21 @@ public class BaseOp extends OpMode {
     }
 
     public void move(double speed) {
-        double x = adjustedSpeed(speed);
-        lmotor1.setPower(-x);
-        lmotor2.setPower(-x);
-        rmotor1.setPower(x);
-        rmotor2.setPower(x);
+        double v = adjustedSpeed(speed);
+        lmotor1.setPower(-v);
+        lmotor2.setPower(-v);
+        rmotor1.setPower(v);
+        rmotor2.setPower(v);
 
     }
+
     public double adjustedMotor(double adjustedSpeed, DcMotor m) {
         double currentPower = m.getPower();
         double delta = adjustedSpeed - currentPower;
         double power = (Math.abs(delta) > deltamax) ? (currentPower + (deltamax * Math.signum(delta))) : (currentPower + delta);
         return power;
     }
+
     static double adjustedSpeed(double speed) {
         if (speed < -1.0) return -1.0;
         else if (speed > 1.0) return 1.0;
@@ -147,7 +157,7 @@ public class BaseOp extends OpMode {
     public void curveDrive(double curve, double magnitude) {
         double leftOutput;
         double rightOutput;
-        double sensitivity = 0; //THIS IS A PLACEHOLDER. FIND A GOOD NUMBER FOR SENSITVITY
+        double sensitivity = 0.5; //double check on this one
         if (curve < 0) {
             double value = Math.log(-curve);
             double ratio = (value - sensitivity) / (value + sensitivity);
