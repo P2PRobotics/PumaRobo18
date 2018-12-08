@@ -82,9 +82,9 @@ public class BaseOp extends OpMode {
 
     public void raiseContainer(boolean raised){
         if(raised) {
-            //intake2.setPosition(1);
+          //  intake2.setDirection(1);
         } else {
-            //intake2.setPosition(0);
+           // intake2.setDirection(-1);
         }
     }
 
