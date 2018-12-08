@@ -36,15 +36,15 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         //check if ftc updated their VuMark resources!!
         headingController.calibrateTo(0.0f);
         headingController.setDesired(160.0f);
+        lift(-1); //lower robot to the ground
+        latchBar(false);
+        latchCup(false);
     }
     public void loop(){
         headingController.update();
         float turnRate = headingController.getControlValue();
         if (turnRate == Float.NaN) turn(0.0);
         else turn(-turnRate);
-        //detatch from lander
-        //liftmotor.setPower(-3);
-        //liftgrab.setPosition(-0.5);
         //orient self
         //use vuforia to locate depot
             // if(RED_TEAM){
