@@ -15,7 +15,6 @@ public class BasicTeleOp extends BaseOp {
 
     }
     //adjust to move and turn at same time
-    //adjust turnTo (goes 0 to 100 which is not ideal)
     @Override
     public void loop() {
         //sets initial power to 0 so motors don't move upon initialization
