@@ -67,27 +67,22 @@ public class BaseOp extends OpMode {
     public void start() {}
     public void loop() {}
 
-    public void wheelIn(boolean in){
-        if(in){
+    public void wheelIn(){
             intake1.setPower(0.75);
-        } else {
-            intake1.setPower(0);
-        }
     }
 
-    public void wheelOut(boolean out) {
-        if(out){
+    public void wheelOut() {
             intake1.setPower(-0.75);
-        } else {
-            intake1.setPower(0);
-        }
+    }
+    public void wheelStop(){
+        intake1.setPower(0);
     }
 
     public void raiseContainer(boolean raised){
         if(raised) {
-          //  intake2.setDirection(1);
+           intake2.setPower(0.5);
         } else {
-           // intake2.setDirection(-1);
+           intake2.setPower(-0.5);
         }
     }
 
@@ -139,6 +134,9 @@ public class BaseOp extends OpMode {
         else if (speed > -0.2 && speed < 0) return -0.2;
         else return speed;
         //Adjust speed so it doesn't slow down too much!!!!!!!
+    }
+    public void curveDrive(double speed, double magnitude){
+
     }
 
 }
