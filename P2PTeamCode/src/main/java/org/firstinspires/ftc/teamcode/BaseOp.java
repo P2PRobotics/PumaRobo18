@@ -71,28 +71,28 @@ public class BaseOp extends OpMode {
     public void loop() {
     }
 
-    public void wheelIn() {
+    public void liftUp() {
         intake1.setPower(0.75);
     }
 
-    public void wheelOut() {
+    public void liftDown() {
         intake1.setPower(-0.75);
     }
-
-    public void wheelStop() {
+    public void liftStop(){
         intake1.setPower(0);
     }
 
+
     public void raiseContainer(boolean raised) {
         if (raised) {
-            intake2.setPower(0.5);
+            intake2.setPower(0.25);
         } else {
             intake2.setPower(0);
         }
     }
     public void lowerContainer(boolean lowered){
         if(lowered){
-            intake2.setPower(-0.5);
+            intake2.setPower(-0.25);
         }
         else{
             intake2.setPower(0);
@@ -100,16 +100,26 @@ public class BaseOp extends OpMode {
     }
 
 
-    public void lift(double speed) {
-        liftMotor.setPower(speed);
+    public void wheelIn() {
+        liftMotor.setPower(0.75);
+    }
+    public void wheelOut(){
+        liftMotor.setPower(-0.75);
+    }
+    public void wheelStop(){
+        liftMotor.setPower(0);
     }
 
-    public void latchBar(boolean latchedBar) {
-        if (latchedBar) {
-            latchBarM.setPosition(0.5);
-        } else {
-            latchBarM.setPosition(0);
+    public void latchOpen() {
+
+            latchBarM.setPosition(2);
         }
+
+
+    public void latchClose() {
+
+            latchBarM.setPosition(0);
+
     }
 
     public void latchCup(boolean latchedCup) {
