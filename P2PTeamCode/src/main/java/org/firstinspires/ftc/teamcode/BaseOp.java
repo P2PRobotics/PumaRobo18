@@ -23,6 +23,8 @@ public class BaseOp extends OpMode {
     public DcMotor intake1;
     public CRServo intake2;
 
+    //motor power reg
+    public static final double deltamax = 0.2;
 
     public void init() {
         //initializes motors, retrieve configs
@@ -42,22 +44,23 @@ public class BaseOp extends OpMode {
 
         //make sure these match what's in the config
 
-        liftMotor= hardwareMap.dcMotor.get("liftmo");
+        liftMotor= hardwareMap.dcMotor.get("liftmo"); //revHub 2, motor port 0
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        latchBarM = hardwareMap.servo.get("latchBarM");
-        latchCupM = hardwareMap.servo.get("latchCupM");
+        latchBarM = hardwareMap.servo.get("latchBarM"); //revHub 1, servo port 0
+        latchCupM = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
 
-        intake1=hardwareMap.dcMotor.get("intake1");
+        intake1=hardwareMap.dcMotor.get("intake1"); //revHub 2, motor port 1
         intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intake2=hardwareMap.crservo.get("intake2");
+        intake2=hardwareMap.crservo.get("intake2"); //revHub 1, servo port 2
 
 
         lmotor1.setPower(0);
         lmotor2.setPower(0);
         rmotor1.setPower(0);
         rmotor2.setPower(0);
+
         liftMotor.setPower(0);
         intake1.setPower(0);
     }
@@ -112,6 +115,8 @@ public class BaseOp extends OpMode {
 
     public void turn(double speed){
         double v = adjustedSpeed(speed);
+        double curPowRm1 = rmotor1.getPower();
+        if ((Math.abs(curPowRm1)+deltamax) > 1.0)
         rmotor1.setPower(v);
         rmotor2.setPower(v);
         lmotor1.setPower(v);
@@ -124,6 +129,7 @@ public class BaseOp extends OpMode {
         lmotor2.setPower(-v);
         rmotor1.setPower(v);
         rmotor2.setPower(v);
+
     }
 
     static double adjustedSpeed(double speed) {
