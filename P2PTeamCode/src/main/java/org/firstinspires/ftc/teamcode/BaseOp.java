@@ -152,31 +152,31 @@ public class BaseOp extends OpMode {
     public void curveDrive(double curve, double magnitude) {
         double leftOutput;
         double rightOutput;
-        double sensitivity = 0.5; //check to see if this is a good number
-        if (curve < 0) {
-            double value = Math.log(-curve);
-            double ratio = (value - sensitivity) / (value + sensitivity);
-            if (ratio == 0) {
-                ratio = .0000000001;
-            }
-            leftOutput = magnitude / ratio;
-            rightOutput = magnitude;
-        } else if (curve > 0) {
-            double value = Math.log(curve);
-            double ratio = (value - sensitivity) / (value + sensitivity);
-            if (ratio == 0) {
-                ratio = .0000000001;
-            }
+        double sensitivity = 1.0; //check to see if this is a good number
+
+        if (curve == 0.0) {
             leftOutput = magnitude;
-            rightOutput = magnitude / ratio;
+            rightOutput = magnitude;
         } else {
-            leftOutput = magnitude;
-            rightOutput = magnitude;
+            double value = Math.log(Math.abs(curve));
+            double ratio = (value - sensitivity) / (value + sensitivity);
+            if (ratio == 0) {
+                ratio = .0000000001;
+            }
+
+            if (curve < 0) {
+                leftOutput = magnitude / ratio;
+                rightOutput = magnitude;
+            } else {
+                leftOutput = magnitude;
+                rightOutput = magnitude / ratio;
+            }
         }
-        leftFrontMotor.setPower(leftOutput);
-        leftBackMotor.setPower(leftOutput);
-        rightFrontMotor.setPower(rightOutput);
-        rightBackMotor.setPower(rightOutput);
+
+        leftFrontMotor.setPower(adjustedSpeed(leftOutput));
+        leftBackMotor.setPower(adjustedSpeed(leftOutput));
+        rightFrontMotor.setPower(adjustedSpeed(rightOutput));
+        rightBackMotor.setPower(adjustedSpeed(rightOutput));
     }
 
     public void setupTelemetry() {

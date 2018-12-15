@@ -9,10 +9,21 @@ public class BasicTeleOp extends BaseOp {
     @Override
     public void init() {
         super.init();
+        raiseContainer();
+        setupTelemetry();
     }
 
     public void start() {
 
+    }
+
+    @Override
+    public void setupTelemetry() {
+        telemetry
+                .addLine("driver")
+                .addData("right_stick_x", () -> gamepad1.right_stick_x)
+                .addData("right_stick_y", () -> gamepad1.right_stick_y);
+        super.setupTelemetry();
     }
 
     //adjust to move and turn at same time
@@ -21,9 +32,11 @@ public class BasicTeleOp extends BaseOp {
         telemetry.update();
         //sets initial power to 0 so motors don't move upon initialization
 
-        double y = -gamepad1.left_stick_y;
         //movement
-        move(y);
+        //move(y);
+        double driveMagnitude = -gamepad1.right_stick_y;
+        double driveCurve = gamepad1.right_stick_x;
+        curveDrive(driveCurve, driveMagnitude);
 
         //left turn/pivot
         if (gamepad1.left_trigger > 0.005) {
