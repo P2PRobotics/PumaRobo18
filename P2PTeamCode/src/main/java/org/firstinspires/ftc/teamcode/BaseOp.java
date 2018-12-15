@@ -84,12 +84,14 @@ public class BaseOp extends OpMode {
         intake1.setPower(0);
     }
 
-    public void raiseContainer(boolean raised) {
-        if (raised) {
+    public void raiseContainer() {
             intake2.setPower(0.5);
-        } else {
-            intake2.setPower(-0.5);
-        }
+    }
+    public void lowerContainer(){
+        intake2.setPower(-0.5);
+    }
+    public void stopContainer(){
+        intake2.setPower(0);
     }
 
 

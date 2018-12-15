@@ -73,9 +73,12 @@ public class BasicTeleOp extends BaseOp {
         }
         //D-Pad to raise dish up and down
         if (gamepad2.dpad_up) {
-            raiseContainer(true);
+            raiseContainer();
         } else if (gamepad2.dpad_down) {
-            lowerContainer(true);
+            lowerContainer();
+        }
+        else{
+            stopContainer();
         }
     }
 }
