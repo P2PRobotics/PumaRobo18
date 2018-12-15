@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 @Autonomous(name = "AutonomousOp", group = "AAAAAARP")
 public class AutonomousOp extends BaseOp implements GameConstants {
 
@@ -18,9 +22,9 @@ public class AutonomousOp extends BaseOp implements GameConstants {
     //private OrientationSensor orientationSensor;
     //private VuforiaHelper vuforia;
 
-    //consider adding states and stacks here
     //if you do states, don't forget to make a state.java file!!
-    //don't forget your important variables here
+
+
     public void init() {
         super.init();
         imu = initIMU(this.hardwareMap);
@@ -30,6 +34,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 1.0f,
                 0.2f
         );
+
     }
 
     public void start() {
@@ -47,31 +52,9 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         float turnRate = headingController.getControlValue();
         if (turnRate == Float.NaN) turn(0.0);
         else turn(-turnRate);
-        //orient self
-        //use vuforia to locate depot
-        // if(RED_TEAM){
-        // if(LEFT_FIELD){
-        // (location 1 --> depot)
-        // }
-        // (locaton 2 --> depot)
-        // }
-        // else{
-        // if(LEFT_FIELD){
-        // (location 3 --> depot)
-        // }
-        // (location 4 --> depot)
-        // }
-        //place marker
-        //if(!RED_TEAM){
-        //depot--> crater1
-        //set power on all motors to 0
-        //}
-        //else{
-        //depot--> crater2
-        //set power on all motors to 0
-        //}
-        //use vuforia to locate crater
-        //park in crater
+        //IF ON CRATER SIDE: hit element near crater, curve to depot, place marker, park in crater if time permits
+        //IF ON DEPOT SIDE: hit element near depot, place marker, drive to crater, park in crater if time permits
+
 
     }
 
