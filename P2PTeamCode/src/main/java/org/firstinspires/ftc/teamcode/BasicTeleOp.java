@@ -48,17 +48,17 @@ public class BasicTeleOp extends BaseOp {
         }
         //A to open grabber, x to close
         if (gamepad2.a) {
-            latchBar(false);
+            latchOpen();
         } else if (gamepad2.x) {
-            latchBar(true);
+            latchClose();
         }
         //hold B for intake, hold Y for output
         if (gamepad2.b) {
-            wheelIn();
+            intakeIn();
         } else if (gamepad2.y) {
-            wheelOut();
+            intakeOut();
         } else {
-            wheelStop();
+            intakeStop();
         }
         //D-Pad to raise dish up and down
         if (gamepad2.dpad_up) {

@@ -20,7 +20,7 @@ public class BaseOp extends OpMode {
     public Servo latchCupM;
 
     //wheeled intake system
-    public DcMotor intake1;
+    public DcMotor intakeMotor;
     public CRServo hopperServo;
 
     //motor power reg
@@ -54,11 +54,10 @@ public class BaseOp extends OpMode {
         latchBarM = hardwareMap.servo.get("latchBarM"); //revHub 1, servo port 0
         latchCupM = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
 
-        intake1 = hardwareMap.dcMotor.get("intake1"); //revHub 2, motor port 1
-        intake1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor = hardwareMap.dcMotor.get("intake1"); //revHub 2, motor port 1
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hopperServo = hardwareMap.crservo.get("intake2"); //revHub 1, servo port 2
-
 
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
@@ -66,7 +65,7 @@ public class BaseOp extends OpMode {
         rightBackMotor.setPower(0);
 
         liftMotor.setPower(0);
-        intake1.setPower(0);
+        intakeMotor.setPower(0);
     }
 
     public void start() {
@@ -75,16 +74,16 @@ public class BaseOp extends OpMode {
     public void loop() {
     }
 
-    public void wheelIn() {
-        intake1.setPower(0.75);
+    public void intakeIn() {
+        intakeMotor.setPower(0.75);
     }
 
-    public void wheelOut() {
-        intake1.setPower(-0.75);
+    public void intakeOut() {
+        intakeMotor.setPower(-0.75);
     }
 
-    public void wheelStop() {
-        intake1.setPower(0);
+    public void intakeStop() {
+        intakeMotor.setPower(0);
     }
 
     public void raiseContainer() {
@@ -96,17 +95,16 @@ public class BaseOp extends OpMode {
     }
 
 
-
     public void lift(double speed) {
         liftMotor.setPower(speed);
     }
 
-    public void latchBar(boolean latchedBar) {
-        if (latchedBar) {
-            latchBarM.setPosition(0.5);
-        } else {
-            latchBarM.setPosition(-0.5);
-        }
+    public void latchOpen() {
+        latchBarM.setPosition(-0.5);
+    }
+
+    public void latchClose() {
+        latchBarM.setPosition(0.5);
     }
 
     public void latchCup(boolean latchedCup) {
