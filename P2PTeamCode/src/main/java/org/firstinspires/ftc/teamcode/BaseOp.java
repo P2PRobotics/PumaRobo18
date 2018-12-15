@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class BaseOp extends OpMode {
 
     //drivetrain
-    public DcMotor lmotor1;
-    public DcMotor lmotor2;
-    public DcMotor rmotor1;
-    public DcMotor rmotor2;
+    public DcMotor leftFrontMotor;
+    public DcMotor leftBackMotor;
+    public DcMotor rightFrontMotor;
+    public DcMotor rightBackMotor;
 
     //lifter and lander (servo latches on to lander, motor extends/retracts arm)
     public DcMotor liftMotor;
@@ -28,19 +28,22 @@ public class BaseOp extends OpMode {
 
     public void init() {
         //initializes motors, retrieve configs
-        lmotor1 = hardwareMap.dcMotor.get("m12");
-        lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lmotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontMotor = hardwareMap.dcMotor.get("m12");
+//        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        lmotor2 = hardwareMap.dcMotor.get("m13");
-        lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBackMotor = hardwareMap.dcMotor.get("m13");
+        leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        rmotor1 = hardwareMap.dcMotor.get("m11");
-        rmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rmotor2 = hardwareMap.dcMotor.get("m10");
-        rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontMotor = hardwareMap.dcMotor.get("m11");
+        rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+//        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        rightBackMotor = hardwareMap.dcMotor.get("m10");
+
+//        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //make sure these match what's in the config
@@ -57,10 +60,10 @@ public class BaseOp extends OpMode {
         intake2 = hardwareMap.crservo.get("intake2"); //revHub 1, servo port 2
 
 
-        lmotor1.setPower(0);
-        lmotor2.setPower(0);
-        rmotor1.setPower(0);
-        rmotor2.setPower(0);
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
 
         liftMotor.setPower(0);
         intake1.setPower(0);
@@ -85,12 +88,14 @@ public class BaseOp extends OpMode {
     }
 
     public void raiseContainer() {
-            intake2.setPower(0.5);
+        intake2.setPower(0.25);
     }
-    public void lowerContainer(){
-        intake2.setPower(-0.5);
+
+    public void lowerContainer() {
+        intake2.setPower(-0.25);
     }
-    public void stopContainer(){
+
+    public void stopContainer() {
         intake2.setPower(0);
     }
 
@@ -103,7 +108,7 @@ public class BaseOp extends OpMode {
         if (latchedBar) {
             latchBarM.setPosition(0.5);
         } else {
-            latchBarM.setPosition(0);
+            latchBarM.setPosition(-0.5);
         }
     }
 
@@ -111,28 +116,27 @@ public class BaseOp extends OpMode {
         if (latchedCup) {
             latchCupM.setPosition(0.5);
         } else {
-            latchCupM.setPosition(0);
+            latchCupM.setPosition(-0.5);
         }
     }
 
 
     public void turn(double speed) {
         double v = adjustedSpeed(speed);
-        double curPowRm1 = rmotor1.getPower();
-        if ((Math.abs(curPowRm1) + deltamax) > 1.0)
-            rmotor1.setPower(v);
-        rmotor2.setPower(v);
-        lmotor1.setPower(v);
-        lmotor2.setPower(v);
+        //double curPowRm1 = rightFrontMotor.getPower();
+        //if ((Math.abs(curPowRm1) + deltamax) > 1.0)
+        rightFrontMotor.setPower(v);
+        rightBackMotor.setPower(v);
+        leftFrontMotor.setPower(-v);
+        leftBackMotor.setPower(-v);
     }
 
     public void move(double speed) {
         double v = adjustedSpeed(speed);
-        lmotor1.setPower(-v);
-        lmotor2.setPower(-v);
-        rmotor1.setPower(v);
-        rmotor2.setPower(v);
-
+        leftFrontMotor.setPower(v);
+        leftBackMotor.setPower(v);
+        rightFrontMotor.setPower(v);
+        rightBackMotor.setPower(v);
     }
 
     static double adjustedSpeed(double speed) {
@@ -168,10 +172,10 @@ public class BaseOp extends OpMode {
             leftOutput = magnitude;
             rightOutput = magnitude;
         }
-        lmotor1.setPower(-leftOutput);
-        lmotor2.setPower(-leftOutput);
-        rmotor1.setPower(rightOutput);
-        rmotor2.setPower(rightOutput);
+        leftFrontMotor.setPower(-leftOutput);
+        leftBackMotor.setPower(-leftOutput);
+        rightFrontMotor.setPower(rightOutput);
+        rightBackMotor.setPower(rightOutput);
     }
 
 }
