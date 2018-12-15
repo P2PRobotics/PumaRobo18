@@ -18,6 +18,7 @@ public class BasicTeleOp extends BaseOp {
     //adjust to move and turn at same time
     @Override
     public void loop() {
+        telemetry.update();
         //sets initial power to 0 so motors don't move upon initialization
 
         double y = -gamepad1.left_stick_y;
@@ -40,22 +41,26 @@ public class BasicTeleOp extends BaseOp {
             turn(0);
         }
 
-        //RB raises extender, LB lowers.
-        if (gamepad2.right_bumper) {
-            lift(1);
-        } else if (gamepad2.left_bumper) {
-            lift(-1);
-        }
-        //A to open grabber, x to close
-        if (gamepad2.a) {
-            latchOpen();
-        } else if (gamepad2.x) {
-            latchClose();
-        }
-        //hold B for intake, hold Y for output
+        // B raises extender, A lowers.
         if (gamepad2.b) {
+            lift(0.5);
+        } else if (gamepad2.a) {
+            lift(-0.5);
+        } else {
+            lift(0);
+        }
+        // X to open latch, Y to close
+        if (gamepad2.y) {
+            latchClose();
+        } else if (gamepad2.x) {
+            latchOpen();
+        } else {
+            latchStop();
+        }
+        //hold RB for intake, hold LB for output
+        if (gamepad2.right_bumper) {
             intakeIn();
-        } else if (gamepad2.y) {
+        } else if (gamepad2.left_bumper) {
             intakeOut();
         } else {
             intakeStop();

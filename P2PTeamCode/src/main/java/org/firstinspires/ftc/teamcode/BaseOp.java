@@ -16,8 +16,8 @@ public class BaseOp extends OpMode {
 
     //lifter and lander (servo latches on to lander, motor extends/retracts arm)
     public DcMotor liftMotor;
-    public Servo latchBarM;
-    public Servo latchCupM;
+    public CRServo latchBarServo;
+    public Servo latchCupServo;
 
     //wheeled intake system
     public DcMotor intakeMotor;
@@ -51,13 +51,13 @@ public class BaseOp extends OpMode {
         liftMotor = hardwareMap.dcMotor.get("liftmo"); //revHub 2, motor port 0
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        latchBarM = hardwareMap.servo.get("latchBarM"); //revHub 1, servo port 0
-        latchCupM = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
+        latchBarServo = hardwareMap.crservo.get("latchBarM"); //revHub 1, servo port 0
+        latchCupServo = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
 
-        intakeMotor = hardwareMap.dcMotor.get("intake1"); //revHub 2, motor port 1
+        intakeMotor = hardwareMap.dcMotor.get("intakemo"); //revHub 2, motor port 1
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        hopperServo = hardwareMap.crservo.get("intake2"); //revHub 1, servo port 2
+        hopperServo = hardwareMap.crservo.get("hopperServo"); //revHub 1, servo port 2
 
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
@@ -66,6 +66,8 @@ public class BaseOp extends OpMode {
 
         liftMotor.setPower(0);
         intakeMotor.setPower(0);
+
+        setupTelemetry();
     }
 
     public void start() {
@@ -99,19 +101,23 @@ public class BaseOp extends OpMode {
         liftMotor.setPower(speed);
     }
 
-    public void latchOpen() {
-        latchBarM.setPosition(-0.5);
+    public void latchClose() {
+        latchBarServo.setPower(0.2);
     }
 
-    public void latchClose() {
-        latchBarM.setPosition(0.5);
+    public void latchOpen() {
+        latchBarServo.setPower(-0.2);
+    }
+
+    public void latchStop() {
+        latchBarServo.setPower(-0);
     }
 
     public void latchCup(boolean latchedCup) {
         if (latchedCup) {
-            latchCupM.setPosition(0.5);
+            latchCupServo.setPosition(0.5);
         } else {
-            latchCupM.setPosition(-0.5);
+            latchCupServo.setPosition(-0.5);
         }
     }
 
@@ -172,5 +178,13 @@ public class BaseOp extends OpMode {
         rightFrontMotor.setPower(rightOutput);
         rightBackMotor.setPower(rightOutput);
     }
+
+    public void setupTelemetry() {
+        telemetry
+                .addLine("hardwareMap")
+                .addData("latchServo", () -> latchBarServo.getPower())
+                .addData("hopperServo", () -> hopperServo.getPower());
+    }
+
 
 }
