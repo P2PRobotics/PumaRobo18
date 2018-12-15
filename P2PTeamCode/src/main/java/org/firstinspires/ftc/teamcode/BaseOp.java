@@ -21,7 +21,7 @@ public class BaseOp extends OpMode {
 
     //wheeled intake system
     public DcMotor intakeMotor;
-    public CRServo hopperServo;
+    public Servo hopperServo;
 
     //motor power reg
     public static final double deltamax = 0.2;
@@ -57,7 +57,7 @@ public class BaseOp extends OpMode {
         intakeMotor = hardwareMap.dcMotor.get("intakemo"); //revHub 2, motor port 1
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        hopperServo = hardwareMap.crservo.get("hopperServo"); //revHub 1, servo port 2
+        hopperServo = hardwareMap.servo.get("hopperServo"); //revHub 1, servo port 2
 
         leftFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
@@ -89,11 +89,11 @@ public class BaseOp extends OpMode {
     }
 
     public void raiseContainer() {
-        hopperServo.setPower(0.4);
+        hopperServo.setPosition(0.75);
     }
 
     public void lowerContainer() {
-        hopperServo.setPower(.15);
+        hopperServo.setPosition(0.57);
     }
 
 
@@ -183,8 +183,6 @@ public class BaseOp extends OpMode {
         telemetry
                 .addLine("hardwareMap")
                 .addData("latchServo", () -> latchBarServo.getPower())
-                .addData("hopperServo", () -> hopperServo.getPower());
+                .addData("hopperServo", () -> hopperServo.getPosition());
     }
-
-
 }
