@@ -65,8 +65,6 @@ public class BasicTeleOp extends BaseOp {
             raiseContainer();
         } else if (gamepad2.dpad_down) {
             lowerContainer();
-        } else {
-            stopContainer();
         }
     }
 }
