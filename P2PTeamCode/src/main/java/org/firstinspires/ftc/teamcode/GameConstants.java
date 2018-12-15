@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 public interface GameConstants {
-    //update these every game!!
-    public static final boolean RED_TEAM = true; //depends on POSITION
-    public static final boolean LEFT_FIELD = true;
-    public static final boolean GET_JEWEL = false; //depends on ALLIANCE. default: don't get jewel, place marker
-    public static final boolean PLACE_MARKER = true;
+    //update these every game!!!!!
+    public static final boolean RED_TEAM = true;
+    public static final boolean CRATER_SIDE = true;
 
     //these are all CONSTANT. do not touch these!!
     double BLUE_DEPOT_X = 23;
