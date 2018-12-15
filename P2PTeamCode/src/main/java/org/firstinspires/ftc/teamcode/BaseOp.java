@@ -49,7 +49,7 @@ public class BaseOp extends OpMode {
         //make sure these match what's in the config
 
         liftMotor = hardwareMap.dcMotor.get("liftmo"); //revHub 2, motor port 0
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         latchBarServo = hardwareMap.crservo.get("latchBarM"); //revHub 1, servo port 0
         latchCupServo = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
@@ -173,8 +173,8 @@ public class BaseOp extends OpMode {
             leftOutput = magnitude;
             rightOutput = magnitude;
         }
-        leftFrontMotor.setPower(-leftOutput);
-        leftBackMotor.setPower(-leftOutput);
+        leftFrontMotor.setPower(leftOutput);
+        leftBackMotor.setPower(leftOutput);
         rightFrontMotor.setPower(rightOutput);
         rightBackMotor.setPower(rightOutput);
     }
