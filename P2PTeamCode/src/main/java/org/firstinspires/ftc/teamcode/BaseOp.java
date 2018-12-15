@@ -30,6 +30,7 @@ public class BaseOp extends OpMode {
         //initializes motors, retrieve configs
         lmotor1 = hardwareMap.dcMotor.get("m12");
         lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lmotor1.setDirection(DcMotorSimple.Direction.REVERSE);
 
         lmotor2 = hardwareMap.dcMotor.get("m13");
         lmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -40,7 +41,7 @@ public class BaseOp extends OpMode {
 
         rmotor2 = hardwareMap.dcMotor.get("m10");
         rmotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rmotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         //make sure these match what's in the config
 
@@ -71,55 +72,37 @@ public class BaseOp extends OpMode {
     public void loop() {
     }
 
-    public void liftUp() {
+    public void wheelIn() {
         intake1.setPower(0.75);
     }
 
-    public void liftDown() {
+    public void wheelOut() {
         intake1.setPower(-0.75);
     }
-    public void liftStop(){
+
+    public void wheelStop() {
         intake1.setPower(0);
     }
 
-
     public void raiseContainer(boolean raised) {
         if (raised) {
-            intake2.setPower(0.25);
+            intake2.setPower(0.5);
         } else {
-            intake2.setPower(0);
-        }
-    }
-    public void lowerContainer(boolean lowered){
-        if(lowered){
-            intake2.setPower(-0.25);
-        }
-        else{
-            intake2.setPower(0);
+            intake2.setPower(-0.5);
         }
     }
 
 
-    public void wheelIn() {
-        liftMotor.setPower(0.75);
-    }
-    public void wheelOut(){
-        liftMotor.setPower(-0.75);
-    }
-    public void wheelStop(){
-        liftMotor.setPower(0);
+    public void lift(double speed) {
+        liftMotor.setPower(speed);
     }
 
-    public void latchOpen() {
-
-            latchBarM.setPosition(2);
-        }
-
-
-    public void latchClose() {
-
+    public void latchBar(boolean latchedBar) {
+        if (latchedBar) {
+            latchBarM.setPosition(0.5);
+        } else {
             latchBarM.setPosition(0);
-
+        }
     }
 
     public void latchCup(boolean latchedCup) {
@@ -133,10 +116,12 @@ public class BaseOp extends OpMode {
 
     public void turn(double speed) {
         double v = adjustedSpeed(speed);
-        lmotor1.setPower(adjustedMotor(v, lmotor1));
-        lmotor2.setPower(adjustedMotor(v, lmotor2));
-        rmotor1.setPower(adjustedMotor(v, rmotor1));
-        rmotor2.setPower(adjustedMotor(v, rmotor2));
+        double curPowRm1 = rmotor1.getPower();
+        if ((Math.abs(curPowRm1) + deltamax) > 1.0)
+            rmotor1.setPower(v);
+        rmotor2.setPower(v);
+        lmotor1.setPower(v);
+        lmotor2.setPower(v);
     }
 
     public void move(double speed) {
@@ -146,13 +131,6 @@ public class BaseOp extends OpMode {
         rmotor1.setPower(v);
         rmotor2.setPower(v);
 
-    }
-
-    public double adjustedMotor(double adjustedSpeed, DcMotor m) {
-        double currentPower = m.getPower();
-        double delta = adjustedSpeed - currentPower;
-        double power = (Math.abs(delta) > deltamax) ? (currentPower + (deltamax * Math.signum(delta))) : (currentPower + delta);
-        return power;
     }
 
     static double adjustedSpeed(double speed) {
@@ -167,7 +145,7 @@ public class BaseOp extends OpMode {
     public void curveDrive(double curve, double magnitude) {
         double leftOutput;
         double rightOutput;
-        double sensitivity = 0.5; //double check on this one
+        double sensitivity = 0.5; //check to see if this is a good number
         if (curve < 0) {
             double value = Math.log(-curve);
             double ratio = (value - sensitivity) / (value + sensitivity);
@@ -195,4 +173,3 @@ public class BaseOp extends OpMode {
     }
 
 }
-

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
 
-@Autonomous(name = "AutonomousOp" , group = "AAAAAARP")
+@Autonomous(name = "AutonomousOp", group = "AAAAAARP")
 public class AutonomousOp extends BaseOp implements GameConstants {
 
     // The IMU sensor object
@@ -21,7 +21,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
     //consider adding states and stacks here
     //if you do states, don't forget to make a state.java file!!
     //don't forget your important variables here
-    public void init(){
+    public void init() {
         super.init();
         imu = initIMU(this.hardwareMap);
         headingController = new AngularPController(
@@ -31,7 +31,8 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 0.2f
         );
     }
-    public void start(){
+
+    public void start() {
         //vuforia.start();
         //check if ftc updated their VuMark resources!!
         headingController.calibrateTo(0.0f);
@@ -40,27 +41,28 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         latchBar(false);
         latchCup(false);
     }
-    public void loop(){
+
+    public void loop() {
         headingController.update();
         float turnRate = headingController.getControlValue();
         if (turnRate == Float.NaN) turn(0.0);
         else turn(-turnRate);
         //orient self
         //use vuforia to locate depot
-            // if(RED_TEAM){
-            // if(LEFT_FIELD){
-            // (location 1 --> depot)
-            // }
-            // (locaton 2 --> depot)
-            // }
-            // else{
-            // if(LEFT_FIELD){
-            // (location 3 --> depot)
-            // }
-            // (location 4 --> depot)
-            // }
+        // if(RED_TEAM){
+        // if(LEFT_FIELD){
+        // (location 1 --> depot)
+        // }
+        // (locaton 2 --> depot)
+        // }
+        // else{
+        // if(LEFT_FIELD){
+        // (location 3 --> depot)
+        // }
+        // (location 4 --> depot)
+        // }
         //place marker
-        //if(RED_TEAM){
+        //if(!RED_TEAM){
         //depot--> crater1
         //set power on all motors to 0
         //}
@@ -72,7 +74,8 @@ public class AutonomousOp extends BaseOp implements GameConstants {
         //park in crater
 
     }
-    public static BNO055IMU initIMU (HardwareMap hardwareMap) {
+
+    public static BNO055IMU initIMU(HardwareMap hardwareMap) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;

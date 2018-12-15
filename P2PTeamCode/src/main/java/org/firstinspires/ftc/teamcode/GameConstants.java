@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 public interface GameConstants {
     //update these every game!!
-    public static final boolean RED_TEAM=true; //depends on POSITION
-    public static final boolean LEFT_FIELD=true;
-    public static final boolean GET_JEWEL=false; //depends on ALLIANCE. default: don't get jewel, place marker
-    public static final boolean PLACE_MARKER=true;
+    public static final boolean RED_TEAM = true; //depends on POSITION
+    public static final boolean LEFT_FIELD = true;
+    public static final boolean GET_JEWEL = false; //depends on ALLIANCE. default: don't get jewel, place marker
+    public static final boolean PLACE_MARKER = true;
 
     //these are all CONSTANT. do not touch these!!
     double BLUE_DEPOT_X = 23;
@@ -61,14 +61,14 @@ public interface GameConstants {
     double BACK_WALL_IMAGE_X = 70.25;
     double BACK_WALL_IMAGE_Y = 140.5;
 
-//    double FIELD_H = ;
+    //    double FIELD_H = ;
 //    double FIELD_V = ;
     //don't forget to add autonomous variables here!
     String VUFORIA_KEY_P2PROBOTICSFTC =
-        "AbAFBSH/////AAABmUmB2GBj3E3Lp169iJ8EyJ4HnypcGXIQtM/SzDVCHvBFnAxejLKQdmXGBS2dU+ovBkYVgj4" +
-            "ynnHL5A3KsUcLID46dfcQ5StAswi8YmexAA3RRc1WjNedgQ40kGVJN4pzEDPwcERn+FBPNy7V7+YGPivTGj" +
-            "zGnItUVSCkoujmHg19qoL5QvAy3ZGBYwkJZX8cu6Q3dNDWYpPPE+NbR6RqbGz5P+3WyTCzZTHDctBiEfolV" +
-            "PO8WAJivG73fdV64LelP5sH3FioYdHSG2SmhwRXsZLvhWUxyA2Yxbcgqu6HXf7T6j9VJr3iSDukvi4QpC2l" +
-            "q8RReMjqlsC/pkGpnJeGwgh+8OuLXPf2qESs7bjFocRb";
+            "AbAFBSH/////AAABmUmB2GBj3E3Lp169iJ8EyJ4HnypcGXIQtM/SzDVCHvBFnAxejLKQdmXGBS2dU+ovBkYVgj4" +
+                    "ynnHL5A3KsUcLID46dfcQ5StAswi8YmexAA3RRc1WjNedgQ40kGVJN4pzEDPwcERn+FBPNy7V7+YGPivTGj" +
+                    "zGnItUVSCkoujmHg19qoL5QvAy3ZGBYwkJZX8cu6Q3dNDWYpPPE+NbR6RqbGz5P+3WyTCzZTHDctBiEfolV" +
+                    "PO8WAJivG73fdV64LelP5sH3FioYdHSG2SmhwRXsZLvhWUxyA2Yxbcgqu6HXf7T6j9VJr3iSDukvi4QpC2l" +
+                    "q8RReMjqlsC/pkGpnJeGwgh+8OuLXPf2qESs7bjFocRb";
 
 }

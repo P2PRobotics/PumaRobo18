@@ -17,7 +17,7 @@ import java.util.Locale;
 
 import static org.firstinspires.ftc.teamcode.AutonomousUtil.adjustedSpeed;
 
-@Autonomous(name="MotorTest2",group="A")
+@Autonomous(name = "MotorTest2", group = "A")
 public final class MotorTest2 extends OpMode {
     private DcMotor lmotor1;
     private DcMotor lmotor2;
@@ -34,7 +34,7 @@ public final class MotorTest2 extends OpMode {
     Acceleration gravity;
 
 
-    public void init(){
+    public void init() {
         lmotor1 = hardwareMap.dcMotor.get("m12");
         lmotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lmotor2 = hardwareMap.dcMotor.get("m13");
@@ -59,7 +59,8 @@ public final class MotorTest2 extends OpMode {
 
 //        targetAngle = rotatedBy(angles.firstAngle,45);
     }
-    public void start(){
+
+    public void start() {
         //?? set up vuforia here??
         // will vuforia be useful here? - makenna
     }
@@ -68,17 +69,17 @@ public final class MotorTest2 extends OpMode {
         return desired - current;
     }
 
-    private double errorProportion (double desired, double current) {
+    private double errorProportion(double desired, double current) {
         return error(desired, current) / desired;
     }
 
-    public void loop(){
+    public void loop() {
         telemetry.update();
 
         double turningSpeed = adjustedSpeed(errorProportion(targetAngle, (angles.firstAngle)));
-        turnTo(targetAngle,turningSpeed);
-        telemetry.addData("Speed:",turningSpeed);
-        telemetry.addData("firstAngle:",(angles.firstAngle));
+        turnTo(targetAngle, turningSpeed);
+        telemetry.addData("Speed:", turningSpeed);
+        telemetry.addData("firstAngle:", (angles.firstAngle));
         telemetry.addData("Target Angle:", targetAngle);
     }
 
@@ -116,63 +117,69 @@ public final class MotorTest2 extends OpMode {
     }
 
 
-
-
     void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
-        telemetry.addAction(new Runnable() { @Override public void run()
-        {
-            // Acquiring the angles is relatively expensive; we don't want
-            // to do that in each of the three items that need that info, as that's
-            // three times the necessary expense.
-            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            gravity  = imu.getGravity();
-        }
+        telemetry.addAction(new Runnable() {
+            @Override
+            public void run() {
+                // Acquiring the angles is relatively expensive; we don't want
+                // to do that in each of the three items that need that info, as that's
+                // three times the necessary expense.
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                gravity = imu.getGravity();
+            }
         });
 
         telemetry.addLine()
                 .addData("status", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return imu.getSystemStatus().toShortString();
                     }
                 })
                 .addData("calib", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return imu.getCalibrationStatus().toString();
                     }
                 });
 
         telemetry.addLine()
                 .addData("heading", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return formatAngle(angles.angleUnit, angles.firstAngle);
                     }
                 })
                 .addData("roll", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return formatAngle(angles.angleUnit, angles.secondAngle);
                     }
                 })
                 .addData("pitch", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
 
         telemetry.addLine()
                 .addData("grvty", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return gravity.toString();
                     }
                 })
                 .addData("mag", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return String.format(Locale.getDefault(), "%.3f",
-                                Math.sqrt(gravity.xAccel*gravity.xAccel
-                                        + gravity.yAccel*gravity.yAccel
-                                        + gravity.zAccel*gravity.zAccel));
+                                Math.sqrt(gravity.xAccel * gravity.xAccel
+                                        + gravity.yAccel * gravity.yAccel
+                                        + gravity.zAccel * gravity.zAccel));
                     }
                 });
     }
@@ -185,7 +192,7 @@ public final class MotorTest2 extends OpMode {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
 
-    String formatDegrees(double degrees){
+    String formatDegrees(double degrees) {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
