@@ -2,14 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.atan;
+import static java.lang.Math.PI;
+import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
-import static java.lang.Math.min;
 import static java.lang.Math.pow;
-import static java.lang.Math.signum;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
 
 @TeleOp(name = "DriveAlgoTestOp", group = "D")
 public class DriveAlgoTestOp extends BaseOp {
@@ -72,17 +72,36 @@ public class DriveAlgoTestOp extends BaseOp {
 
     }
 
+    static double addRadians(double a, double b) {
+        double tmp = (a + b + PI) % (2*PI);
+        if (tmp < 0.0) tmp = (2*PI) + tmp;
+        return tmp - PI;
+    }
+
+    static double subtractRadians(double a, double b) {
+        return addRadians(a, -b);
+    }
+
     void geometricDrive() {
         double x = gamepad1.right_stick_x;
         double y = -gamepad1.right_stick_y;
 
-        double x2 = pow(gamepad1.right_stick_x, 2.0);
-        double y2 = pow(gamepad1.right_stick_y, 2.0);
+        double x2 = pow(x, 2.0);
+        double y2 = pow(y, 2.0);
         double magnitude = sqrt(x2 + y2);
-        double degrees = atan(y / x) - 45.0; // shifted -45 for clever math #reasons
+        double theta = atan2(y, x);
+        double degrees = toDegrees(theta);
+        double rad45 = toRadians(45.0);
+        double angle = subtractRadians(theta, rad45); // shifted -45 for clever math #reasons
 
-        double left = magnitude * (cos(degrees) / cos(45.0));
-        double right = magnitude * (sin(degrees) / sin(45.0));
+        double angleDegrees = toDegrees(angle);
+
+        double cosAngle = cos(angle);
+        double cos45 = cos(rad45);
+        double left = magnitude * (cosAngle / cos45);
+        double sinA = sin(angle);
+        double sin45 = sin(rad45);
+        double right = magnitude * (sinA / sin45);
 
         move(left, right);
     }

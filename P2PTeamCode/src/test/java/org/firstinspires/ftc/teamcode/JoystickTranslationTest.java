@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
-import static java.lang.Math.atan;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
 import static java.lang.Math.min;
@@ -27,8 +26,8 @@ public class JoystickTranslationTest {
     }
 
     static double addRadians(double a, double b) {
-        double tmp = (a + b + PI) % PI;
-        if (tmp < 0.0) tmp = PI + tmp;
+        double tmp = (a + b + PI) % (2*PI);
+        if (tmp < 0.0) tmp = (2*PI) + tmp;
         return tmp - PI;
     }
 
@@ -43,11 +42,7 @@ public class JoystickTranslationTest {
         double theta = atan2(y, x);
         double degrees = toDegrees(theta);
         double rad45 = toRadians(45.0);
-        double angle = theta - rad45; // shifted -45 for clever math #reasons
-        double angle2 = subtractRadians(theta, rad45);
-        if (abs(angle - angle2) > 0.00001) {
-            System.out.println("break here");
-        }
+        double angle = subtractRadians(theta, rad45); // shifted -45 for clever math #reasons
 
         double angleDegrees = toDegrees(angle);
 
@@ -64,58 +59,58 @@ public class JoystickTranslationTest {
     @Test
     public void east() {
         Pair<Double> motorOutput = translate(1.0, 0.0);
-        assertEquals(1.0f, motorOutput.left, 0.1);
-        assertEquals(-1.0f, motorOutput.right, 0.1);
+        assertEquals(1.0, motorOutput.left, 0.1);
+        assertEquals(-1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void north() {
         Pair<Double> motorOutput = translate(0.0, 1.0);
-        assertEquals(1.0f, motorOutput.left, 0.1);
-        assertEquals(1.0f, motorOutput.right, 0.1);
+        assertEquals(1.0, motorOutput.left, 0.1);
+        assertEquals(1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void west() {
         Pair<Double> motorOutput = translate(-1.0, 0.0);
-        assertEquals(-1.0f, motorOutput.left, 0.1);
-        assertEquals(1.0f, motorOutput.right, 0.1);
+        assertEquals(-1.0, motorOutput.left, 0.1);
+        assertEquals(1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void south() {
         Pair<Double> motorOutput = translate(0.0, -1.0);
-        assertEquals(-1.0f, motorOutput.left, 0.1);
-        assertEquals(-1.0f, motorOutput.right, 0.1);
+        assertEquals(-1.0, motorOutput.left, 0.1);
+        assertEquals(-1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void northEast() {
         Pair<Double> motorOutput = translate(cos(toRadians(45.0)), sin(toRadians(45.0)));
-        assertEquals(1.0f, motorOutput.left, 0.1);
-        assertEquals(0.0f, motorOutput.right, 0.1);
+        assertEquals(1.0, motorOutput.left, 0.1);
+        assertEquals(0.0, motorOutput.right, 0.1);
     }
 
 
     @Test
     public void northWest() {
         Pair<Double> motorOutput = translate(cos(toRadians(135.0)), sin(toRadians(135.0)));
-        assertEquals(0.0f, motorOutput.left, 0.1);
-        assertEquals(1.0f, motorOutput.right, 0.1);
+        assertEquals(0.0, motorOutput.left, 0.1);
+        assertEquals(1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void southEast() {
-        Pair<Double> motorOutput = translate(cos(toRadians(-45.0)), sin(toRadians(-45.0)));
-        assertEquals(-1.0f, motorOutput.left, 0.1);
-        assertEquals(0.0f, motorOutput.right, 0.1);
+        Pair<Double> motorOutput = translate(cos(toRadians(315.0)), sin(toRadians(315.0)));
+        assertEquals(0.0, motorOutput.left, 0.1);
+        assertEquals(-1.0, motorOutput.right, 0.1);
     }
 
     @Test
     public void southWest() {
-        Pair<Double> motorOutput = translate(cos(toRadians(-135.0)), sin(toRadians(-135.0)));
-        assertEquals(0.0f, motorOutput.left, 0.1);
-        assertEquals(-1.0f, motorOutput.right, 0.1);
+        Pair<Double> motorOutput = translate(cos(toRadians(225.0)), sin(toRadians(225.0)));
+        assertEquals(-1.0, motorOutput.left, 0.1);
+        assertEquals(0.0, motorOutput.right, 0.1);
     }
 
 }
