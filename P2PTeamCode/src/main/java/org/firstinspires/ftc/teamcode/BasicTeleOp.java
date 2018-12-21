@@ -10,7 +10,6 @@ public class BasicTeleOp extends BaseOp {
     public void init() {
         super.init();
         raiseContainer();
-        setupTelemetry();
     }
 
     public void start() {
