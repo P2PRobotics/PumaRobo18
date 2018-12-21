@@ -82,26 +82,70 @@ public class DriveAlgoTestOp extends BaseOp {
         return addRadians(a, -b);
     }
 
+    /**
+     *  Treats the joystick as a unit-circle, and determines
+     *  the angle in radians and the radius of the current
+     *  joystick position.
+     *
+     *  The power output of the *right* wheels is proportional
+     *  to the radius times the *sine* of the angle, divided
+     *  by the constant √2 / 2.
+     *
+     *  The power output of the *left* wheels is proportional
+     *  to the radius times the *codesine* of the angle,
+     *  divided by the constant √2 / 2.
+     *
+     *  When the joystick is full up or full down, we want
+     *  the wheels to be moving at equal speed and direction,
+     *  moving the robot forward or reverse.
+     *
+     *  On a unit circle, the sine and cosine values are
+     *  equal at 45 degrees and 225 degrees. On the joystick
+     *  this would correspond to upper-right and lower-left.
+     *  By subtracting 45 degrees from the angle, we align
+     *  these two points on the unit circle with full up
+     *  and full down on the joystick.
+     *
+     *  Sensitivity is adjusted by applying an exponent to
+     *  the radius to obtain a magnitude. Since the radius
+     *  value is always between 0.0 and 1.0, applying an
+     *  exponent has the effect of lowering the magnitude.
+     *  For example, 0.5^3 is 0.125. In other words, this
+     *  treats the linear action of the joystick along each
+     *  as a curve.
+     *
+     *  #math
+     */
     void geometricDrive() {
+        // Right on the controller corresponds to positive.
         double x = gamepad1.right_stick_x;
+
+        // Up on the controller corresponds to negative,
+        // so negate the value to treat up as the positive
+        // y-axis on a unit circle.
         double y = -gamepad1.right_stick_y;
 
         double x2 = pow(x, 2.0);
         double y2 = pow(y, 2.0);
-        double magnitude = sqrt(x2 + y2);
-        double theta = atan2(y, x);
-        double degrees = toDegrees(theta);
-        double rad45 = toRadians(45.0);
-        double angle = subtractRadians(theta, rad45); // shifted -45 for clever math #reasons
+        double radius = sqrt(x2 + y2);
 
-        double angleDegrees = toDegrees(angle);
+        // Larger sensitivity values correspond to lower
+        // twitchiness. 1 is most twitchy. 3 to 5 feel
+        // pretty good. 7 is kinda mushy.
+        double sensitivity = 3;
+        double magnitude = pow(radius, sensitivity);
+
+        double theta = atan2(y, x);
+        double rad45 = toRadians(45.0);
+        double angle = subtractRadians(theta, rad45);
 
         double cosAngle = cos(angle);
-        double cos45 = cos(rad45);
+        double cos45 = cos(rad45); // constant, same as √2 / 2
         double left = magnitude * (cosAngle / cos45);
-        double sinA = sin(angle);
-        double sin45 = sin(rad45);
-        double right = magnitude * (sinA / sin45);
+
+        double sinAngle = sin(angle);
+        double sin45 = sin(rad45); // constant, same as √2 / 2
+        double right = magnitude * (sinAngle / sin45);
 
         move(left, right);
     }
