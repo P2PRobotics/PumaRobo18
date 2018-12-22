@@ -30,28 +30,7 @@ public class BasicTeleOp extends BaseOp {
     public void loop() {
         telemetry.update();
         //sets initial power to 0 so motors don't move upon initialization
-
-        //movement
-        //move(y);
-        double driveMagnitude = -gamepad1.right_stick_y;
-        double driveCurve = gamepad1.right_stick_x;
-        curveDrive(driveCurve, driveMagnitude);
-
-        //left turn/pivot
-        if (gamepad1.left_trigger > 0.005) {
-            double trigger = gamepad1.left_trigger;
-            //maybe use a constant number for turning--depends on driver comfort
-            turn(trigger);
-            return;
-        }
-        //right turn/pivot
-        else if (gamepad1.right_trigger > 0.005) {
-            double trigger = gamepad1.right_trigger;
-            turn(-trigger);
-            return;
-        } else {
-            turn(0);
-        }
+        geometricDrive(gamepad1.right_stick_x,-gamepad1.right_stick_y);
 
         // B raises extender, A lowers.
         if (gamepad2.b) {

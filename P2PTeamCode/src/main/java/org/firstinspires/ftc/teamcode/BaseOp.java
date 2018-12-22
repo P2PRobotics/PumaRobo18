@@ -6,6 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import static java.lang.Math.PI;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.pow;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toRadians;
+
 public class BaseOp extends OpMode {
 
     //drivetrain
@@ -186,5 +194,75 @@ public class BaseOp extends OpMode {
                 .addLine("hardwareMap")
                 .addData("latchServo", () -> latchBarServo.getPower())
                 .addData("hopperServo", () -> hopperServo.getPosition());
+    }
+
+    static double addRadians(double a, double b) {
+        double tmp = (a + b + PI) % (2*PI);
+        if (tmp < 0.0) tmp = (2*PI) + tmp;
+        return tmp - PI;
+    }
+
+    static double subtractRadians(double a, double b) {
+        return addRadians(a, -b);
+    }
+
+    /**
+     *  Treats the joystick as a unit-circle, and determines
+     *  the angle in radians and the radius of the current
+     *  joystick position.
+     *
+     *  The power output of the *right* wheels is proportional
+     *  to the radius times the *sine* of the angle, divided
+     *  by the constant √2 / 2.
+     *
+     *  The power output of the *left* wheels is proportional
+     *  to the radius times the *codesine* of the angle,
+     *  divided by the constant √2 / 2.
+     *
+     *  When the joystick is full up or full down, we want
+     *  the wheels to be moving at equal speed and direction,
+     *  moving the robot forward or reverse.
+     *
+     *  On a unit circle, the sine and cosine values are
+     *  equal at 45 degrees and 225 degrees. On the joystick
+     *  this would correspond to upper-right and lower-left.
+     *  By subtracting 45 degrees from the angle, we align
+     *  these two points on the unit circle with full up
+     *  and full down on the joystick.
+     *
+     *  Sensitivity is adjusted by applying an exponent to
+     *  the radius to obtain a magnitude. Since the radius
+     *  value is always between 0.0 and 1.0, applying an
+     *  exponent has the effect of lowering the magnitude.
+     *  For example, 0.5^3 is 0.125. In other words, this
+     *  treats the linear action of the joystick along each
+     *  as a curve.
+     *
+     *  #math
+     */
+    void geometricDrive(double x, double y) {
+        double x2 = pow(x, 2.0);
+        double y2 = pow(y, 2.0);
+        double radius = sqrt(x2 + y2);
+
+        // Larger sensitivity values correspond to lower
+        // twitchiness. 1 is most twitchy. 3 to 5 feel
+        // pretty good. 7 is kinda mushy.
+        double sensitivity = 3;
+        double magnitude = pow(radius, sensitivity);
+
+        double theta = atan2(y, x);
+        double rad45 = toRadians(45.0);
+        double angle = subtractRadians(theta, rad45);
+
+        double cosAngle = cos(angle);
+        double cos45 = cos(rad45); // constant, same as √2 / 2
+        double left = magnitude * (cosAngle / cos45);
+
+        double sinAngle = sin(angle);
+        double sin45 = sin(rad45); // constant, same as √2 / 2
+        double right = magnitude * (sinAngle / sin45);
+
+        move(left, right);
     }
 }
