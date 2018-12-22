@@ -9,7 +9,6 @@ public class BasicTeleOp extends BaseOp {
     @Override
     public void init() {
         super.init();
-        raiseContainer();
     }
 
     public void start() {

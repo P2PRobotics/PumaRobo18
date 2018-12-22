@@ -75,6 +75,7 @@ public class BaseOp extends OpMode {
         liftMotor.setPower(0);
         intakeMotor.setPower(0);
 
+        raiseContainer();
         setupTelemetry();
     }
 
