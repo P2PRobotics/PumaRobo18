@@ -51,7 +51,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 1.0f,
                 0.2f
         );
-        state = State.INIT_DROP;
+        state = State.INIT_DRIVE;
     }
 
     public void start() {
@@ -96,7 +96,39 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                     latchOpen();
                 } else {
                     latchStop();
+                    state = State.INIT_DRIVE;
+
                 }
+                break;
+            case INIT_DRIVE:
+                autoRuntime.reset();
+                state = State.DRIVE;
+                break;
+            case DRIVE:
+
+                //movetimed(autoRuntime,.5, .4);
+                if (autoRuntime.time() < 0_500) {
+                    move(0.5);
+                }
+                else if(autoRuntime.time() < 1_000){
+                    move(0);
+                }
+                else if(autoRuntime.time() < 2_000){
+
+                    turn(.5);
+                }
+
+                else{
+                    move(0);
+                    state = State.STOP;
+                }
+
+
+
+                break;
+
+            case STOP:
+                stop();
                 break;
 //            case SCAN:
 //                if (tfod != null) {
@@ -172,6 +204,9 @@ public class AutonomousOp extends BaseOp implements GameConstants {
 //                }
 //                break;
         }
+
+
+
     }
 
     public static BNO055IMU initIMU(HardwareMap hardwareMap) {

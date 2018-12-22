@@ -5,8 +5,10 @@ public enum State {
     INIT_DROP,
     DROPPING,
     INIT_UNLATCH,
-    UNLATCHING
-//    ,
+    UNLATCHING,
+    INIT_DRIVE,
+    DRIVE,
+    STOP,
 //    SCAN,
 //    GOLD_LEFT,
 //    GOLD_CENTER,

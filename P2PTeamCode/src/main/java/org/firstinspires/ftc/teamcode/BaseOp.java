@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.atan2;
@@ -140,6 +141,16 @@ public class BaseOp extends OpMode {
         leftBackMotor.setPower(v);
         rightFrontMotor.setPower(v);
         rightBackMotor.setPower(v);
+    }
+    public void movetimed(ElapsedTime runtime, double speed, double seconds) {
+
+        if (runtime.time() < seconds) {
+            move(speed);
+        }
+        else{
+            move(0);
+        }
+
     }
 
     public void move(double left, double right) {
