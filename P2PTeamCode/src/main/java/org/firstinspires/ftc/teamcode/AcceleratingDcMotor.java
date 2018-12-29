@@ -14,7 +14,7 @@ public class AcceleratingDcMotor extends DelegatingDcMotor {
     }
 
     private double desiredPower;
-    final double LIMIT = .002;
+    final double LIMIT = 0.000003;
     double lastNanos;
 
     @Override
