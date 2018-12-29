@@ -33,33 +33,33 @@ public class BaseOp extends OpMode {
 
     public void init() {
         //initializes motors, retrieve configs
-        leftFrontMotor = hardwareMap.dcMotor.get("m12");
+        leftFrontMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m12")));
 //        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        leftBackMotor = hardwareMap.dcMotor.get("m13");
+        leftBackMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m13")));
         leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 //        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rightFrontMotor = hardwareMap.dcMotor.get("m11");
+        rightFrontMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m11")));
         rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
 //        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rightBackMotor = hardwareMap.dcMotor.get("m10");
+        rightBackMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m10")));
 
 //        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //make sure these match what's in the config
 
-        liftMotor = hardwareMap.dcMotor.get("liftmo"); //revHub 2, motor port 0
+        liftMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("liftmo"))); //revHub 2, motor port 0
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         latchBarServo = hardwareMap.crservo.get("latchBarM"); //revHub 1, servo port 0
         latchCupServo = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
 
-        intakeMotor = hardwareMap.dcMotor.get("intakemo"); //revHub 2, motor port 1
+        intakeMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("intakemo"))); //revHub 2, motor port 1
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hopperServo = hardwareMap.servo.get("hopperServo"); //revHub 1, servo port 2
@@ -76,7 +76,13 @@ public class BaseOp extends OpMode {
     public void start() {
     }
 
+
     public void loop() {
+        //Because we are using an accelerating motor, we let it update each time through the loop.
+        leftFrontMotor.setPower(leftFrontMotor.getPower());
+        leftBackMotor.setPower(leftBackMotor.getPower());
+        rightFrontMotor.setPower(rightFrontMotor.getPower());
+        rightBackMotor.setPower(rightBackMotor.getPower());
     }
 
     public void intakeIn() {
@@ -129,33 +135,13 @@ public class BaseOp extends OpMode {
     }
 
     public void move4(double leftFront, double leftBack, double rightFront, double rightBack) {
-        double lf = clamp(leftFront);
-        double rf = clamp(rightFront);
-        double lb = clamp(leftBack);
-        double rb = clamp(rightBack);
-        leftFrontMotor.setPower(lf);
-        leftBackMotor.setPower(lb);
-        rightFrontMotor.setPower(rf);
-        rightBackMotor.setPower(rb);
+
+        leftFrontMotor.setPower(leftFront);
+        leftBackMotor.setPower(leftBack);
+        rightFrontMotor.setPower(rightFront);
+        rightBackMotor.setPower(rightBack);
     }
 
-    /**
-     * Clamps a requested speed to the operating range of our motors.
-     * <pre>{@code
-     *   out of range |-1.0        -0.2| dead zone |0.2          1.0| out of range
-     * <--------------|----------------|-----|-----|----------------|-------------->
-     * }</pre>
-     *
-     * @param speed any desired speed value
-     * @return a number in the range [-1.0..-0.2, 0.0, 0.2..1.0]
-     */
-    static double clamp(double speed) {
-        if (speed < -1.0) return -1.0;
-        else if (speed > 1.0) return 1.0;
-        else if (speed < 0.2 && speed > 0) return 0.2;
-        else if (speed > -0.2 && speed < 0) return -0.2;
-        else return speed;
-    }
 
     public void setupTelemetry() {
         telemetry

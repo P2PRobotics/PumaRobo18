@@ -59,6 +59,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
     }
 
     public void loop() {
+        super.loop();
         //headingController.update();
         //float turnRate = headingController.getControlValue();
         //if (turnRate == Float.NaN) turn(0.0);

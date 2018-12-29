@@ -26,6 +26,7 @@ public class BasicTeleOp extends BaseOp {
     //adjust to move and turn at same time
     @Override
     public void loop() {
+        super.loop();
         telemetry.update();
 
         geometricDrive(gamepad1.right_stick_x,-gamepad1.right_stick_y);
