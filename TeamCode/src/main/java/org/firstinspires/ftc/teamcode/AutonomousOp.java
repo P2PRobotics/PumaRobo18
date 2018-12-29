@@ -6,14 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
-
-import java.util.List;
-import java.util.Stack;
 
 @Autonomous(name = "AutonomousOp", group = "AAAAAARP")
 public class AutonomousOp extends BaseOp implements GameConstants {
@@ -108,10 +101,10 @@ public class AutonomousOp extends BaseOp implements GameConstants {
 
                 //movetimed(autoRuntime,.5, .4);
                 if (autoRuntime.time() < 0_500) {
-                    move(0.5);
+                    moveStraight(0.5);
                 }
                 else if(autoRuntime.time() < 1_000){
-                    move(0);
+                    moveStraight(0);
                 }
                 else if(autoRuntime.time() < 2_000){
 
@@ -119,7 +112,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 }
 
                 else{
-                    move(0);
+                    moveStraight(0);
                     state = State.STOP;
                 }
 
@@ -174,7 +167,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
 //                break;
 //            case GOLD_CENTER:
 //                if (autoRuntime.time() < 3) {
-//                    move(0.5);
+//                    moveStraight(0.5);
 //                }
 //                break;
 //            case GOLD_RIGHT:

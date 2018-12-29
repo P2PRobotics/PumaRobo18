@@ -21,14 +21,13 @@ public class BasicTeleOp extends BaseOp {
                 .addLine("driver")
                 .addData("right_stick_x", () -> gamepad1.right_stick_x)
                 .addData("right_stick_y", () -> gamepad1.right_stick_y);
-        super.setupTelemetry();
     }
 
     //adjust to move and turn at same time
     @Override
     public void loop() {
         telemetry.update();
-        //sets initial power to 0 so motors don't move upon initialization
+
         geometricDrive(gamepad1.right_stick_x,-gamepad1.right_stick_y);
 
         // B raises extender, A lowers.

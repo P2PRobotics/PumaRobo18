@@ -8,7 +8,6 @@ import static java.lang.Math.cos;
 import static java.lang.Math.pow;
 import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
-import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 
 @TeleOp(name = "DriveAlgoTestOp", group = "D")
@@ -54,7 +53,6 @@ public class DriveAlgoTestOp extends BaseOp {
             .addData("right_stick_y", () -> gamepad1.right_stick_y)
             .addData("driveMode", this::getDriveMode)
         ;
-        super.setupTelemetry();
     }
 
     //adjust to move and turn at same time
@@ -67,7 +65,6 @@ public class DriveAlgoTestOp extends BaseOp {
         switch (getDriveMode()) {
             case "geometricDrive": geometricDrive(); break;
             case "legacyDrive": legacyDrive(); break;
-            case "curveDrive": curveDrive(); break;
         }
 
     }
@@ -92,7 +89,7 @@ public class DriveAlgoTestOp extends BaseOp {
      *  by the constant √2 / 2.
      *
      *  The power output of the *left* wheels is proportional
-     *  to the radius times the *codesine* of the angle,
+     *  to the radius times the *cosine* of the angle,
      *  divided by the constant √2 / 2.
      *
      *  When the joystick is full up or full down, we want
@@ -147,31 +144,7 @@ public class DriveAlgoTestOp extends BaseOp {
         double sin45 = sin(rad45); // constant, same as √2 / 2
         double right = magnitude * (sinAngle / sin45);
 
-        move(left, right);
-    }
-
-    void curveDrive() {
-        //movement
-        //move(y);
-        double driveMagnitude = -gamepad1.right_stick_y;
-        double driveCurve = gamepad1.right_stick_x;
-        curveDrive(driveCurve, driveMagnitude);
-
-        //left turn/pivot
-        if (gamepad1.left_trigger > 0.005) {
-            double trigger = gamepad1.left_trigger;
-            //maybe use a constant number for turning--depends on driver comfort
-            turn(trigger);
-            return;
-        }
-        //right turn/pivot
-        else if (gamepad1.right_trigger > 0.005) {
-            double trigger = gamepad1.right_trigger;
-            turn(-trigger);
-            return;
-        } else {
-            turn(0);
-        }
+        moveLR(left, right);
     }
 
     void legacyDrive() {
@@ -184,7 +157,7 @@ public class DriveAlgoTestOp extends BaseOp {
         if (x != 0 || y != 0) {
             n = ((x + y) / Math.sqrt(2.0)); // n is the power of the motors in the +x +y direction
             //double m = ((x - y) / Math.sqrt(2.0)); // m is the power of the motors in the +x -y direction
-            move(-n);
+            moveStraight(-n);
         }
         //left turn
         if (gamepad1.left_trigger > 0.005) {
