@@ -144,7 +144,7 @@ public class DriveAlgoTestOp extends BaseOp {
         double sin45 = sin(rad45); // constant, same as √2 / 2
         double right = magnitude * (sinAngle / sin45);
 
-        moveLR(left, right);
+        //moveLR(left, right);
     }
 
     void legacyDrive() {

@@ -44,7 +44,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 1.0f,
                 0.2f
         );
-        state = State.INIT_DRIVE;
+        state = State.INIT_DROP;
     }
 
     public void start() {
@@ -86,7 +86,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 state = State.UNLATCHING;
                 break;
             case UNLATCHING:
-                if (autoRuntime.time() < 2_000) {
+                if (autoRuntime.time() < 2_500) {
                     latchOpen();
                 } else {
                     latchStop();
@@ -99,26 +99,53 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 state = State.DRIVE;
                 break;
             case DRIVE:
-
+//make time variable (more difficult than you might think)
                 //movetimed(autoRuntime,.5, .4);
-                if (autoRuntime.time() < 0_500) {
+                //crater side code
+                if (autoRuntime.time() < 1000) {
                     moveStraight(0.5);
-                }
-                else if(autoRuntime.time() < 1_000){
+                } else if (autoRuntime.time() < 1500) {
                     moveStraight(0);
-                }
-                else if(autoRuntime.time() < 2_000){
-
-                    turn(.5);
-                }
-
-                else{
+                } else if (autoRuntime.time() < 1900) {
+                    moveStraight(-0.5);
+                } else if (autoRuntime.time() < 2500) {
                     moveStraight(0);
+                } else if (autoRuntime.time() < 3000) {
+                    turn(0.5);
+                } else if (autoRuntime.time() < 3200) {
+                    turn(0);
+                } else if (autoRuntime.time() < 4200) {
+                    moveStraight(0.45);
+                } else if (autoRuntime.time() < 4900) {
+                    moveStraight(0);
+                } else if (autoRuntime.time() < 6000) {
+                    turn(0.4);
+                } else if (autoRuntime.time() < 6200) {
+                    turn(0);
+                } else if (autoRuntime.time() < 8100) {
+                    moveStraight(0.5);
+
+
+                } else if (autoRuntime.time() < 9400) {
+                    lowerContainer();
+                    moveStraight(0);
+                    state = State.INIT_DEPOSIT;
+                }
+                break;
+
+            case INIT_DEPOSIT:
+                autoRuntime.reset();
+                lowerContainer();
+                state = State.DEPOSITING;
+                break;
+            case DEPOSITING:
+
+                if (autoRuntime.time() < 1000) {
+                    intakeOut();
+                } else {
+                    intakeStop();
                     state = State.STOP;
                 }
-
-
-
                 break;
 
             case STOP:
@@ -198,7 +225,6 @@ public class AutonomousOp extends BaseOp implements GameConstants {
 //                }
 //                break;
         }
-
 
 
     }

@@ -59,7 +59,7 @@ public class BaseOp extends OpMode {
         latchBarServo = hardwareMap.crservo.get("latchBarM"); //revHub 1, servo port 0
         latchCupServo = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
 
-        intakeMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("intakemo"))); //revHub 2, motor port 1
+        intakeMotor = hardwareMap.dcMotor.get("intakemo"); //revHub 2, motor port 1
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         hopperServo = hardwareMap.servo.get("hopperServo"); //revHub 1, servo port 2
@@ -130,12 +130,11 @@ public class BaseOp extends OpMode {
         moveLR(speed, speed);
     }
 
-    public void moveLR(double left, double right) {
+    private void moveLR(double left, double right) {
         move4(left, left, right, right);
     }
 
-    public void move4(double leftFront, double leftBack, double rightFront, double rightBack) {
-
+    private void move4(double leftFront, double leftBack, double rightFront, double rightBack) {
         leftFrontMotor.setPower(leftFront);
         leftBackMotor.setPower(leftBack);
         rightFrontMotor.setPower(rightFront);

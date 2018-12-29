@@ -8,7 +8,10 @@ public enum State {
     UNLATCHING,
     INIT_DRIVE,
     DRIVE,
-    STOP,
+    INIT_DEPOSIT,
+    DEPOSITING,
+    STOP
+
 //    SCAN,
 //    GOLD_LEFT,
 //    GOLD_CENTER,
