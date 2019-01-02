@@ -1,73 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
+/**
+ * ON CRATER SIDE:
+ * hit element near crater, turn left to depot, place marker, park in crater if time permits
+ */
+@Autonomous(name = "AutonomousCraterSideOp", group = "AAAAAARP")
+public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameConstants {
 
-@Autonomous(name = "AutonomousOp", group = "AAAAAARP")
-public class AutonomousOp extends BaseOp implements GameConstants {
-
-    // The IMU sensor object
-    BNO055IMU imu;
-    AngularPController headingController;
-
-    //add sensors here!!
-    //private OrientationSensor orientationSensor;
-    //private VuforiaHelper vuforia;
-
-    //if you do states, don't forget to make a state.java file!!
-    //State stuff
-
-    private State state;
-
-    //Timer
-    private ElapsedTime autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
-    //TensorFlow stuff
-    private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
-    private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
-    private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-
-    private static final String VUFORIA_KEY = VUFORIA_KEY_P2PROBOTICSFTC;
-
-    public void init() {
-        super.init();
-        autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        imu = initIMU(this.hardwareMap);
-        headingController = new AngularPController(
-                () -> imu.getAngularOrientation().firstAngle,
-                2.0f,
-                1.0f,
-                0.2f
-        );
-        state = State.INIT_DROP;
-    }
-
-    public void start() {
-        //vuforia.start();
-
-//        if (tfod != null) {
-//            tfod.activate();
-//        }
-        //check if ftc updated their VuMark resources!!
-        headingController.calibrateTo(0.0f);
-        headingController.setDesired(160.0f);
-    }
-
+    @Override
     public void loop() {
         super.loop();
-        //headingController.update();
-        //float turnRate = headingController.getControlValue();
-        //if (turnRate == Float.NaN) turn(0.0);
-        //else turn(-turnRate);
-        //IF ON CRATER SIDE: hit element near crater, curve to depot, place marker, park in crater if time permits
-        //IF ON DEPOT SIDE: hit element near depot, place marker, drive to crater, park in crater if time permits
 
-        //More state stuff
         switch (state) {
             case INIT_DROP:
                 autoRuntime.reset();
@@ -81,6 +26,7 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                     state = State.INIT_UNLATCH;
                 }
                 break;
+
             case INIT_UNLATCH:
                 autoRuntime.reset();
                 state = State.UNLATCHING;
@@ -91,25 +37,24 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 } else {
                     latchStop();
                     state = State.INIT_DRIVE;
-
                 }
                 break;
+
             case INIT_DRIVE:
                 autoRuntime.reset();
                 state = State.DRIVE;
                 break;
             case DRIVE:
-//make time variable (more difficult than you might think)
-                //movetimed(autoRuntime,.5, .4);
+                //TODO: make time variable (more difficult than you might think)
                 //crater side code
                 if (autoRuntime.time() < 1000) {
                     moveStraight(0.5);
                 } else if (autoRuntime.time() < 1500) {
-                    moveStraight(0);
+                    moveStop();
                 } else if (autoRuntime.time() < 1900) {
                     moveStraight(-0.5);
                 } else if (autoRuntime.time() < 2500) {
-                    moveStraight(0);
+                    moveStop();
                 } else if (autoRuntime.time() < 3000) {
                     turn(0.5);
                 } else if (autoRuntime.time() < 3200) {
@@ -117,29 +62,29 @@ public class AutonomousOp extends BaseOp implements GameConstants {
                 } else if (autoRuntime.time() < 4200) {
                     moveStraight(0.45);
                 } else if (autoRuntime.time() < 4900) {
-                    moveStraight(0);
+                    moveStop();
                 } else if (autoRuntime.time() < 6000) {
                     turn(0.4);
                 } else if (autoRuntime.time() < 6200) {
                     turn(0);
                 } else if (autoRuntime.time() < 8100) {
                     moveStraight(0.5);
-
-
                 } else if (autoRuntime.time() < 9400) {
                     lowerContainer();
-                    moveStraight(0);
+                    moveStop();
                     state = State.INIT_DEPOSIT;
                 }
                 break;
 
+            // INIT_DEPOSIT and DEPOSITING:
+            //   Need to open the container while moving, then brake so that
+            //   the element in the container is forced into the outtake wheel.
             case INIT_DEPOSIT:
                 autoRuntime.reset();
                 lowerContainer();
                 state = State.DEPOSITING;
                 break;
             case DEPOSITING:
-
                 if (autoRuntime.time() < 1000) {
                     intakeOut();
                 } else {
@@ -151,6 +96,8 @@ public class AutonomousOp extends BaseOp implements GameConstants {
             case STOP:
                 stop();
                 break;
+
+
 //            case SCAN:
 //                if (tfod != null) {
 //                    // getUpdatedRecognitions() will return null if no new information is available since
@@ -225,46 +172,5 @@ public class AutonomousOp extends BaseOp implements GameConstants {
 //                }
 //                break;
         }
-
-
     }
-
-    public static BNO055IMU initIMU(HardwareMap hardwareMap) {
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        // The IMU sensor object
-        BNO055IMU imu;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        return imu;
-    }
-
-//    private void initVuforia() {
-//        /*
-//         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-//         */
-//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-//
-//        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-//
-//        //  Instantiate the Vuforia engine
-//        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-//
-//        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
-//    }
-//
-//    private void initTfod() {
-//        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-//                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-//        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-//        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
-//    }
 }

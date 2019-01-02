@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.hardware.AcceleratingDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.ClampingDcMotor;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.atan2;
 import static java.lang.Math.cos;
@@ -31,30 +34,26 @@ public class BaseOp extends OpMode {
     public DcMotor intakeMotor;
     public Servo hopperServo;
 
+    @Override
     public void init() {
         //initializes motors, retrieve configs
+
+        // All drive motors are now wrapped in "decorator" classes that dampen acceleration and
+        // ensure the requested power range makes sense for the motors.
+        // See: https://www.journaldev.com/1540/decorator-design-pattern-in-java-example
         leftFrontMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m12")));
-//        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftBackMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m13")));
         leftBackMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         rightFrontMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m11")));
         rightFrontMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         rightBackMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m10")));
-
-//        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        //make sure these match what's in the config
 
         liftMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("liftmo"))); //revHub 2, motor port 0
         liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         latchBarServo = hardwareMap.crservo.get("latchBarM"); //revHub 1, servo port 0
         latchCupServo = hardwareMap.servo.get("latchCupM"); //revHub 1, servo port 1
@@ -64,25 +63,29 @@ public class BaseOp extends OpMode {
 
         hopperServo = hardwareMap.servo.get("hopperServo"); //revHub 1, servo port 2
 
-        moveStraight(0);
-
         liftMotor.setPower(0);
         intakeMotor.setPower(0);
 
+        moveStop();
         raiseContainer();
         setupTelemetry();
     }
 
-    public void start() {
-    }
-
-
+    @Override
     public void loop() {
+        telemetry.update();
+
         //Because we are using an accelerating motor, we let it update each time through the loop.
         leftFrontMotor.setPower(leftFrontMotor.getPower());
         leftBackMotor.setPower(leftBackMotor.getPower());
         rightFrontMotor.setPower(rightFrontMotor.getPower());
         rightBackMotor.setPower(rightBackMotor.getPower());
+    }
+
+    @Override
+    public void stop() {
+        moveStop();
+        super.stop();
     }
 
     public void intakeIn() {
@@ -105,7 +108,6 @@ public class BaseOp extends OpMode {
         hopperServo.setPosition(0.57);
     }
 
-
     public void lift(double speed) {
         liftMotor.setPower(speed);
     }
@@ -126,6 +128,10 @@ public class BaseOp extends OpMode {
         moveLR(-speed, speed);
     }
 
+    public void moveStop() {
+        move4(0, 0, 0, 0);
+    }
+
     public void moveStraight(double speed) {
         moveLR(speed, speed);
     }
@@ -140,7 +146,6 @@ public class BaseOp extends OpMode {
         rightFrontMotor.setPower(rightFront);
         rightBackMotor.setPower(rightBack);
     }
-
 
     public void setupTelemetry() {
         telemetry

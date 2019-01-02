@@ -11,8 +11,9 @@ public class BasicTeleOp extends BaseOp {
         super.init();
     }
 
+    @Override
     public void start() {
-
+        super.start();
     }
 
     @Override
@@ -27,7 +28,6 @@ public class BasicTeleOp extends BaseOp {
     @Override
     public void loop() {
         super.loop();
-        telemetry.update();
 
         geometricDrive(gamepad1.right_stick_x,-gamepad1.right_stick_y);
 

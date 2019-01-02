@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -18,6 +19,7 @@ import java.util.Locale;
 import static org.firstinspires.ftc.teamcode.AutonomousUtil.adjustedSpeed;
 
 @Autonomous(name = "MotorTest2", group = "A")
+@Disabled
 public final class MotorTest2 extends OpMode {
     private DcMotor lmotor1;
     private DcMotor lmotor2;
