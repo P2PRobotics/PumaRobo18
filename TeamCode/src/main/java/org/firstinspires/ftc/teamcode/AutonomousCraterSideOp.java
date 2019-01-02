@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * ON CRATER SIDE:
  * hit element near crater, turn left to depot, place marker, park in crater if time permits
  */
-@Autonomous(name = "AutonomousCraterSideOp", group = "AAAAAARP")
+@Autonomous(name = "AutonomousCraterSideOp", group = "Competition")
 public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameConstants {
 
     @Override
