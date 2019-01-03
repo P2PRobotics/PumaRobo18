@@ -10,7 +10,9 @@ public enum State {
     DRIVE,
     INIT_DEPOSIT,
     DEPOSITING,
-    STOP
+    STOP,
+
+    EXAMPLE_TURN // safe to remove this
 
 //    SCAN,
 //    GOLD_LEFT,
