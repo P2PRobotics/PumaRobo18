@@ -39,10 +39,10 @@ abstract class AutonomousBaseOp extends BaseOp {
         autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         imu = initIMU(this.hardwareMap);
         headingController = new AngularPController(
-            () -> imu.getAngularOrientation().firstAngle,
-            2.0f,
-            1.0f,
-            0.2f
+            () -> (double) imu.getAngularOrientation().firstAngle,
+            2.0d,
+            1.0d,
+            0.2d
         );
         state = State.INIT_DROP;
     }

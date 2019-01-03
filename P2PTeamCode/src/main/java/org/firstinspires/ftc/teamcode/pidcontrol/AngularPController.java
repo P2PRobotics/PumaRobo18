@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.pidcontrol;
 
 import java.util.function.Supplier;
 
-import static java.lang.Float.NaN;
+import static java.lang.Double.NaN;
 import static java.lang.Math.signum;
 
 /**
@@ -37,7 +37,7 @@ import static java.lang.Math.signum;
  *  }
  *
  *  void loop() {
- *    float h;
+ *    double h;
  *    // updated heading after reading from the supplier (may take time)
  *    h = heading.update();
  *
@@ -63,15 +63,15 @@ import static java.lang.Math.signum;
  * and easily embeddable into a simulation environment.
  */
 public class AngularPController {
-    private float zero;
-    private float lastAbsolute;
+    private double zero;
+    private double lastAbsolute;
 
-    private float desired = NaN;
+    private double desired = NaN;
 
-    private final Supplier<Float> absolute;
-    private final float tolerance;
-    private final float gain;
-    private final float clamp;
+    private final Supplier<Double> absolute;
+    private final double tolerance;
+    private final double gain;
+    private final double clamp;
 
     /**
      * Constructs a new [AngularPController] given a supplier of an absolute
@@ -99,10 +99,10 @@ public class AngularPController {
      *                  command a turn slower than 10% max rate.
      */
     public AngularPController(
-        Supplier<Float> absolute,
-        float tolerance,
-        float gain,
-        float clamp
+        Supplier<Double> absolute,
+        double tolerance,
+        double gain,
+        double clamp
     ) {
         this.absolute = absolute;
         this.tolerance = tolerance;
@@ -116,7 +116,7 @@ public class AngularPController {
      *
      * @param reference angle in degrees between [-1.0..1.0]
      */
-    public void calibrateTo(float reference) {
+    public void calibrateTo(double reference) {
         checkAngleArgument(reference);
         this.zero = subtractAngle(readAbsolute(), reference);
     }
@@ -129,7 +129,7 @@ public class AngularPController {
      *
      * @param desired angle in degrees within [-180.0..180.0] or NaN.
      */
-    public void setDesired(float desired) {
+    public void setDesired(double desired) {
         checkAngleArgumentOrNaN(desired);
         this.desired = desired;
     }
@@ -140,7 +140,7 @@ public class AngularPController {
      *
      * @return angle in degrees within [-180.0..180.0] or NaN
      */
-    public float getDesired() {
+    public double getDesired() {
         return desired;
     }
 
@@ -152,9 +152,9 @@ public class AngularPController {
      *
      * @return a value in degrees within [-180.0..180.0].
      * @see AngularPController#getCurrent() ()
-     * @see AngularPController#calibrateTo(float)
+     * @see AngularPController#calibrateTo(double)
      */
-    public float update() {
+    public double update() {
         readAbsolute();
         return getCurrent();
     }
@@ -166,7 +166,7 @@ public class AngularPController {
      *
      * @return a value within [-1.0..-clamp, 0.0, clamp..1.0, NaN]
      */
-    public float getControlValue() {
+    public double getControlValue() {
         return calcControlValue(getProportion(), gain, clamp, 1.0f);
     }
 
@@ -177,9 +177,9 @@ public class AngularPController {
      * @return last known angle in degrees between
      * [-180.0..180.0], as adjusted by calibration.
      * @see AngularPController#update()
-     * @see AngularPController#calibrateTo(float)
+     * @see AngularPController#calibrateTo(double)
      */
-    public float getCurrent() {
+    public double getCurrent() {
         return subtractAngle(getAbsolute(), getZero());
     }
 
@@ -192,7 +192,7 @@ public class AngularPController {
      * @return A value in degrees [-180.0..-tolerance, 0.0, tolerance..180.0]
      * @see AngularPController#update()
      */
-    public float getError() {
+    public double getError() {
         return calcAngularError(getDesired(), getCurrent(), tolerance);
     }
 
@@ -201,7 +201,7 @@ public class AngularPController {
      *
      * @return A value between [-1.0..1.0].
      */
-    public float getProportion() {
+    public double getProportion() {
         return calcAngularProportion(getError());
     }
 
@@ -211,7 +211,7 @@ public class AngularPController {
      *
      * @return a value within[-180.0..180.0]
      */
-    public float getZero() {
+    public double getZero() {
         return zero;
     }
 
@@ -220,22 +220,22 @@ public class AngularPController {
      *
      * @return a value within[-180.0..180.0]
      */
-    public float getAbsolute() {
+    public double getAbsolute() {
         return lastAbsolute;
     }
 
-    private float readAbsolute() {
+    private double readAbsolute() {
         this.lastAbsolute = absolute.get();
         checkAngleArgument(this.lastAbsolute);
         return this.lastAbsolute;
     }
 
-    private static void checkAngleArgumentOrNaN(float given) {
+    private static void checkAngleArgumentOrNaN(double given) {
         if (NaN == given) return;
         checkAngleArgument(given);
     }
 
-    private static void checkAngleArgument(float given) {
+    private static void checkAngleArgument(double given) {
         if (given < -180.0f || given > 180.0f)
             throw new IllegalArgumentException(
                 "Angle value must be between -180.0..180.0 degrees!"
@@ -247,32 +247,32 @@ public class AngularPController {
     //   - package-visible to allow for unit-testing the algorithms
     //   - static since they are stateless logic only
 
-    static float addAngle(float a, float b) {
-        float tmp = (a + b + 180.0f) % 360.0f;
+    public static double addAngle(double a, double b) {
+        double tmp = (a + b + 180.0f) % 360.0f;
         if (tmp < 0.0f) tmp = 360.0f + tmp;
         return tmp - 180.0f;
     }
 
-    static float subtractAngle(float a, float b) {
+    public static double subtractAngle(double a, double b) {
         return addAngle(a, -b);
     }
 
-    static float calcAngularError(float desired, float current, float tolerance) {
+    static double calcAngularError(double desired, double current, double tolerance) {
         if (NaN == desired) return NaN;
 
-        float err = subtractAngle(desired, current);
+        double err = subtractAngle(desired, current);
         return (Math.abs(err) < Math.abs(tolerance)) ? 0.0f : err;
     }
 
-    static float calcAngularProportion(float err) {
+    static double calcAngularProportion(double err) {
         return (NaN == err) ? NaN : err / 180.0f;
     }
 
-    static float calcControlValue(float proportion, float gain, float min, float max) {
+    static double calcControlValue(double proportion, double gain, double min, double max) {
         if (NaN == proportion) return NaN;
         if (0.0f == proportion) return 0.0f;
 
-        final float propGain = proportion * gain;
+        final double propGain = proportion * gain;
 
         if (propGain < -max) return -max;
         else if (propGain > max) return max;

@@ -108,8 +108,8 @@ public class BaseOp extends OpMode {
         hopperServo.setPosition(0.57);
     }
 
-    public void lift(double speed) {
-        liftMotor.setPower(speed);
+    public void lift(double power) {
+        liftMotor.setPower(power);
     }
 
     public void latchClose() {
@@ -124,16 +124,16 @@ public class BaseOp extends OpMode {
         latchBarServo.setPower(-0);
     }
 
-    public void turn(double speed) {
-        moveLR(-speed, speed);
+    public void turn(double power) {
+        moveLR(-power, power);
     }
 
     public void moveStop() {
         move4(0, 0, 0, 0);
     }
 
-    public void moveStraight(double speed) {
-        moveLR(speed, speed);
+    public void moveStraight(double power) {
+        moveLR(power, power);
     }
 
     private void moveLR(double left, double right) {
@@ -178,7 +178,7 @@ public class BaseOp extends OpMode {
      * divided by the constant √2 / 2.
      * <p>
      * When the joystick is full up or full down, we want
-     * the wheels to be moving at equal speed and direction,
+     * the wheels to be moving at equal power and direction,
      * moving the robot forward or reverse.
      * <p>
      * On a unit circle, the sine and cosine values are

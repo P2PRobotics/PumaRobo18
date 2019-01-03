@@ -19,16 +19,16 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(JUnitQuickcheck.class)
 public class AngularPControllerTest {
-    public static float EXACT = 0.0f;
-    public static float CLOSE = 0.01f;
+    public static double EXACT = 0.0d;
+    public static double CLOSE = 0.01f;
 
     @Property
     public void testWithDefaults(
-        @InRange(min = "-180.0f", max = "180.0f") float absolute,
-        @InRange(min = "-180.0f", max = "180.0f") float reference,
-        @InRange(min = "-180.0f", max = "180.0f") float desired
+        @InRange(min = "-180.0d", max = "180.0d") double absolute,
+        @InRange(min = "-180.0d", max = "180.0d") double reference,
+        @InRange(min = "-180.0d", max = "180.0d") double desired
     ) {
-        AngularPController ctrl = new AngularPController(() -> absolute, 0.0f, 1.0f, 0.0f);
+        AngularPController ctrl = new AngularPController(() -> absolute, 0.0d, 1.0d, 0.0d);
         ctrl.calibrateTo(reference);
         ctrl.setDesired(desired);
         ctrl.update();
@@ -36,28 +36,28 @@ public class AngularPControllerTest {
         assertEquals(reference, ctrl.update(), CLOSE);
         assertEquals(desired, addAngle(ctrl.update(), ctrl.getError()), CLOSE);
         assertEquals(signum(ctrl.getError()), signum(ctrl.getControlValue()), EXACT);
-        assertThat(ctrl.getError(), is(both(greaterThanOrEqualTo(-180.0f)).and(lessThanOrEqualTo(180.0f))));
+        assertThat(ctrl.getError(), is(both(greaterThanOrEqualTo(-180.0d)).and(lessThanOrEqualTo(180.0d))));
     }
 
     @Property
     public void testArithmatic(
-        @InRange(min = "-180.0f", max = "180.0f") float a,
-        @InRange(min = "-180.0f", max = "180.0f") float b
+        @InRange(min = "-180.0d", max = "180.0d") double a,
+        @InRange(min = "-180.0d", max = "180.0d") double b
     ) {
-        assertThat(subtractAngle(a, b), is(both(greaterThanOrEqualTo(-180.0f)).and(lessThanOrEqualTo(180.0f))));
-        assertThat(addAngle(a, b), is(both(greaterThanOrEqualTo(-180.0f)).and(lessThanOrEqualTo(180.0f))));
+        assertThat(subtractAngle(a, b), is(both(greaterThanOrEqualTo(-180.0d)).and(lessThanOrEqualTo(180.0d))));
+        assertThat(addAngle(a, b), is(both(greaterThanOrEqualTo(-180.0d)).and(lessThanOrEqualTo(180.0d))));
     }
 
     @Test
     public void cornerCases() {
-        assertThat(subtractAngle(180.0f, 180.0f), is(0.0f));
-        assertThat(subtractAngle(-180.0f, 180.0f), is(0.0f));
-        assertThat(subtractAngle(180.0f, -180.0f), is(0.0f));
-        assertThat(subtractAngle(-180.0f, -180.0f), is(0.0f));
-        assertThat(addAngle(180.0f, 180.0f), is(0.0f));
-        assertThat(addAngle(-180.0f, 180.0f), is(0.0f));
-        assertThat(addAngle(180.0f, -180.0f), is(0.0f));
-        assertThat(addAngle(-180.0f, -180.0f), is(0.0f));
+        assertThat(subtractAngle(180.0d, 180.0d), is(0.0d));
+        assertThat(subtractAngle(-180.0d, 180.0d), is(0.0d));
+        assertThat(subtractAngle(180.0d, -180.0d), is(0.0d));
+        assertThat(subtractAngle(-180.0d, -180.0d), is(0.0d));
+        assertThat(addAngle(180.0d, 180.0d), is(0.0d));
+        assertThat(addAngle(-180.0d, 180.0d), is(0.0d));
+        assertThat(addAngle(180.0d, -180.0d), is(0.0d));
+        assertThat(addAngle(-180.0d, -180.0d), is(0.0d));
     }
 }
 
