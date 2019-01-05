@@ -96,6 +96,15 @@ abstract class AutonomousBaseOp extends BaseOp {
         super.stop();
     }
 
+    //index starting from zero
+    public static int addUp (int[] arr, int index) {
+//        if (index != 0) {
+        int total = 0;
+        for (int i = 0; i < index; i++) {
+            total += arr[i];
+        }
+        return total;
+    }
 //    private void initVuforia() {
 //        /*
 //         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

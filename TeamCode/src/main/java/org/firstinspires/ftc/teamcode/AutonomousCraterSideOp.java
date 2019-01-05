@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "AutonomousCraterSideOp", group = "Competition")
 public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameConstants {
 
+    int[] time = {1000, 500, 400, 600, 500, 200,1000,700,1100,200,1900,1300};
     @Override
     public void loop() {
         super.loop();
@@ -47,29 +48,29 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
             case DRIVE:
                 //TODO: make time variable (more difficult than you might think)
                 //crater side code
-                if (autoRuntime.time() < 1000) {
+                if (autoRuntime.time() < addUp(time, 0)) {
                     moveStraight(0.5);
-                } else if (autoRuntime.time() < 1500) {
+                } else if (autoRuntime.time() < addUp(time, 1)) {
                     moveStop();
-                } else if (autoRuntime.time() < 1900) {
+                } else if (autoRuntime.time() < addUp(time, 2)) {
                     moveStraight(-0.5);
-                } else if (autoRuntime.time() < 2500) {
+                } else if (autoRuntime.time() < addUp(time, 3)) {
                     moveStop();
-                } else if (autoRuntime.time() < 3000) {
+                } else if (autoRuntime.time() < addUp(time, 4)) {
                     turn(0.5);
-                } else if (autoRuntime.time() < 3200) {
+                } else if (autoRuntime.time() < addUp(time, 5)) {
                     turn(0);
-                } else if (autoRuntime.time() < 4200) {
+                } else if (autoRuntime.time() < addUp(time, 6)) {
                     moveStraight(0.45);
-                } else if (autoRuntime.time() < 4900) {
+                } else if (autoRuntime.time() < addUp(time, 7)) {
                     moveStop();
-                } else if (autoRuntime.time() < 6000) {
+                } else if (autoRuntime.time() < addUp(time, 8)) {
                     turn(0.4);
-                } else if (autoRuntime.time() < 6200) {
+                } else if (autoRuntime.time() < addUp(time, 9)) {
                     turn(0);
-                } else if (autoRuntime.time() < 8100) {
+                } else if (autoRuntime.time() < addUp(time, 10)) {
                     moveStraight(0.5);
-                } else if (autoRuntime.time() < 9400) {
+                } else if (autoRuntime.time() < addUp(time, 11)) {
                     lowerContainer();
                     moveStop();
                     state = State.INIT_DEPOSIT;
