@@ -2,6 +2,28 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+enum State {
+    //keep track of states
+    INIT_DROP,
+    DROPPING,
+    INIT_UNLATCH,
+    UNLATCHING,
+    INIT_DRIVE,
+    DRIVE,
+    INIT_DEPOSIT,
+    DEPOSITING,
+    STOP
+
+//    SCAN,
+//    GOLD_LEFT,
+//    GOLD_CENTER,
+//    GOLD_RIGHT,
+//    DRIVE_DEPOT,
+//    DRIVE_CRATER,
+//    PLACE_MARKER,
+//    PARK
+}
+
 /**
  * ON CRATER SIDE:
  * hit element near crater, turn left to depot, place marker, park in crater if time permits
@@ -9,94 +31,159 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "AutonomousCraterSideOp", group = "Competition")
 public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameConstants {
 
-    int[] time = {1000, 500, 400, 600, 500, 200,1000,700,1100,200,1900,1300};
     @Override
     public void loop() {
         super.loop();
 
         switch (state) {
-            case INIT_DROP:
+            case 0:
                 autoRuntime.reset();
-                state = State.DROPPING;
+                state++;
                 break;
-            case DROPPING:
+
+            case 1: // LOWER
                 if (autoRuntime.time() < 2_500) {
                     lift(0.5);
-                } else {
+                } else if (autoRuntime.time() < 3_000) {
                     lift(0);
-                    state = State.INIT_UNLATCH;
+                } else {
+                    autoRuntime.reset();
+                    state++;
                 }
                 break;
 
-            case INIT_UNLATCH:
-                autoRuntime.reset();
-                state = State.UNLATCHING;
-                break;
-            case UNLATCHING:
+            case 2: // UNLATCH
                 if (autoRuntime.time() < 2_500) {
                     latchOpen();
-                } else {
+                } else if (autoRuntime.time() < 3_000) {
                     latchStop();
-                    state = State.INIT_DRIVE;
+                } else {
+                    headingController.calibrateTo(42.5d);
+                    autoRuntime.reset();
+                    state++;
                 }
                 break;
 
-            case INIT_DRIVE:
-                autoRuntime.reset();
-                state = State.DRIVE;
-                break;
-            case DRIVE:
-                //TODO: make time variable (more difficult than you might think)
+            case 3: // DRIVE FWD TO GAME ELEMENT
                 //crater side code
-                if (autoRuntime.time() < addUp(time, 0)) {
+                if (autoRuntime.time() < 1_000) {
                     moveStraight(0.5);
-                } else if (autoRuntime.time() < addUp(time, 1)) {
+                } else if (autoRuntime.time() < 1_500) {
                     moveStop();
-                } else if (autoRuntime.time() < addUp(time, 2)) {
-                    moveStraight(-0.5);
-                } else if (autoRuntime.time() < addUp(time, 3)) {
-                    moveStop();
-                } else if (autoRuntime.time() < addUp(time, 4)) {
-                    turn(0.5);
-                } else if (autoRuntime.time() < addUp(time, 5)) {
-                    turn(0);
-                } else if (autoRuntime.time() < addUp(time, 6)) {
-                    moveStraight(0.45);
-                } else if (autoRuntime.time() < addUp(time, 7)) {
-                    moveStop();
-                } else if (autoRuntime.time() < addUp(time, 8)) {
-                    turn(0.4);
-                } else if (autoRuntime.time() < addUp(time, 9)) {
-                    turn(0);
-                } else if (autoRuntime.time() < addUp(time, 10)) {
-                    moveStraight(0.5);
-                } else if (autoRuntime.time() < addUp(time, 11)) {
-                    lowerContainer();
-                    moveStop();
-                    state = State.INIT_DEPOSIT;
+                } else {
+                    autoRuntime.reset();
+                    state++;
                 }
                 break;
 
-            // INIT_DEPOSIT and DEPOSITING:
-            //   Need to open the container while moving, then brake so that
-            //   the element in the container is forced into the outtake wheel.
-            case INIT_DEPOSIT:
-                autoRuntime.reset();
-                lowerContainer();
-                state = State.DEPOSITING;
+            case 4: // DRIVE BKWD FROM GAME ELEMENT
+                if (autoRuntime.time() < 400) {
+                    moveStraight(-0.5);
+                } else if (autoRuntime.time() < 900) {
+                    moveStop();
+                } else {
+                    headingController.setDesired(100.0d);
+                    autoRuntime.reset();
+                    state++;
+                }
                 break;
-            case DEPOSITING:
-                if (autoRuntime.time() < 1000) {
+
+            case 5: // TURN LEFT
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 6: // DRIVE FWD TO SIDE WALL
+                if (autoRuntime.time() < 1_200) {
+                    moveStraight(0.45d);
+                } else if (autoRuntime.time() < 1_700) {
+                    moveStop();
+                } else {
+                    headingController.setDesired(167.0d);
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 7: // TURN TOWARDS DEPOT
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 8: // DRIVE FWD TO DEPOT & EJECT
+                if (autoRuntime.time() < 500) {
+                    moveStraight(0.5);
+                    if (autoRuntime.time() > 300) {
+                        lowerContainer();
+                        intakeOut();
+                    }
+                } else if (autoRuntime.time() < 1_000) {
+                    moveStop();
+                } else {
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 9: // MOVE BKWD & EJECT
+                if (autoRuntime.time() < 500) {
+                    moveStraight(-0.5d);
+                } else if (autoRuntime.time() < 1_000) {
+                    moveStop();
+                } else {
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 10: // STOP & EJECT
+                if (autoRuntime.time() < 1_500) {
                     intakeOut();
                 } else {
                     intakeStop();
-                    state = State.STOP;
+                    autoRuntime.reset();
+                    state++;
                 }
                 break;
 
-            case STOP:
+//            case 11:
+//                autoRuntime.reset();
+//                lowerContainer();
+//                state++;
+//                break;
+//
+//            case 12:
+//                if (autoRuntime.time() < 200) {
+//
+//                } else  if(autoRuntime.time() < 700){
+//
+//                } else {
+//                    state++;
+//                }
+//                break;
+
+            case 99:
                 stop();
                 break;
+
+            default:
+                state++;
+                break;
+        }
+
+        // INIT_DEPOSIT and DEPOSITING:
+        //   Need to open the container while moving, then brake so that
+        //   the element in the container is forced into the outtake wheel.
 
 
 //            case SCAN:
@@ -122,13 +209,13 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
 //                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
 //                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
 //                                    autoRuntime.reset();
-//                                    state = State.GOLD_LEFT;
+//                                    state = GOLD_LEFT;
 //                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
 //                                    autoRuntime.reset();
-//                                    state = State.GOLD_RIGHT;
+//                                    state = GOLD_RIGHT;
 //                                } else {
 //                                    autoRuntime.reset();
-//                                    state = State.GOLD_CENTER;
+//                                    state = GOLD_CENTER;
 //                                }
 //                            }
 //                        }
@@ -172,6 +259,6 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
 //
 //                }
 //                break;
-        }
     }
 }
+

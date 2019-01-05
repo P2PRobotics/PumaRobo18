@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.GameConstants.VUFORIA_KEY_P2PROBOTI
  * common to both Autonomous and Driver control.
  */
 abstract class AutonomousBaseOp extends BaseOp {
-    protected State state;
+    protected int state;
 
     //Timer
     protected ElapsedTime autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -44,7 +44,7 @@ abstract class AutonomousBaseOp extends BaseOp {
             1.0d,
             0.2d
         );
-        state = State.INIT_DROP;
+        state = 0;
     }
 
     public static BNO055IMU initIMU(HardwareMap hardwareMap) {
@@ -87,8 +87,7 @@ abstract class AutonomousBaseOp extends BaseOp {
 
     @Override
     public void start() {
-        headingController.calibrateTo(0.0f);
-        headingController.setDesired(160.0f);
+        super.start();
     }
 
     @Override
