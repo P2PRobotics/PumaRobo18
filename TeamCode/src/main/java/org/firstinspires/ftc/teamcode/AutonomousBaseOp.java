@@ -101,11 +101,11 @@ abstract class AutonomousBaseOp extends BaseOp {
                     int silverMineral2X = -1;
                     for (Recognition recognition : updatedRecognitions) {
                         if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getLeft();
+                            goldMineralX = (int) recognition.getTop();
                         } else if (silverMineral1X == -1) {
-                            silverMineral1X = (int) recognition.getLeft();
+                            silverMineral1X = (int) recognition.getTop();
                         } else {
-                            silverMineral2X = (int) recognition.getLeft();
+                            silverMineral2X = (int) recognition.getTop();
                         }
                     }
                     if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
@@ -113,10 +113,10 @@ abstract class AutonomousBaseOp extends BaseOp {
                             goldElement = 1;
                             telemetry.addData("Gold Mineral Position", "Left");
                         } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            goldElement = 2;
+                            goldElement = 3;
                             telemetry.addData("Gold Mineral Position", "Right");
                         } else {
-                            goldElement = 3;
+                            goldElement = 2;
                             telemetry.addData("Gold Mineral Position", "Center");
                         }
                     }
@@ -192,28 +192,4 @@ abstract class AutonomousBaseOp extends BaseOp {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
-
-
-//    private void initVuforia() {
-//        /*
-//         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-//         */
-//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-//
-//        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-//
-//        //  Instantiate the Vuforia engine
-//        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-//
-//        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
-//    }
-//
-//    private void initTfod() {
-//        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-//                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-//        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-//        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
-//    }
 }

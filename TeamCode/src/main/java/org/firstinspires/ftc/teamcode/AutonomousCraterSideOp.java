@@ -57,8 +57,8 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                             goldSpin = 0.0;
                             break;
 
-                        case 2: //HIT MIDDLE ELEMENT BY SPINNING WITH RIGHT WHEEL
-                            headingController.setDesired(headingController.getCurrent());
+                        case 2: //HIT MIDDLE ELEMENT WITH RIGHT WHEEL BY SPINNING
+                            headingController.setDesired(headingController.update());
                             goldDriveTime = 450;
                             goldSpin = 40.0;
                             break;
