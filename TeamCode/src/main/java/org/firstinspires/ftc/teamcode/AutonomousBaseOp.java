@@ -5,7 +5,13 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
+
+import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.GameConstants.VUFORIA_KEY_P2PROBOTICSFTC;
 
@@ -23,6 +29,7 @@ abstract class AutonomousBaseOp extends BaseOp {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    int goldElement = 2;
 
     private static final String VUFORIA_KEY = VUFORIA_KEY_P2PROBOTICSFTC;
 
@@ -39,11 +46,23 @@ abstract class AutonomousBaseOp extends BaseOp {
         autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         imu = initIMU(this.hardwareMap);
         headingController = new AngularPController(
-            () -> (double) imu.getAngularOrientation().firstAngle,
-            2.0d,
-            1.0d,
-            0.2d
+                () -> (double) imu.getAngularOrientation().firstAngle,
+                2.0d,
+                1.0d,
+                0.2d
         );
+        initVuforia();
+
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        if (tfod != null) {
+            tfod.activate();
+        }
+
         state = 0;
     }
 
@@ -70,13 +89,41 @@ abstract class AutonomousBaseOp extends BaseOp {
     @Override
     public void init_loop() {
         super.init_loop();
-        // TODO: Use Tensorflow here to passively attempt detection of the Gold element while we're waiting for the round to begin.
-        // vuforia.start();
-
-        // if (tfod != null) {
-        //     tfod.activate();
-        // }
-        // check if ftc updated their VuMark resources!!
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                if (updatedRecognitions.size() == 3) {
+                    int goldMineralX = -1;
+                    int silverMineral1X = -1;
+                    int silverMineral2X = -1;
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            goldMineralX = (int) recognition.getLeft();
+                        } else if (silverMineral1X == -1) {
+                            silverMineral1X = (int) recognition.getLeft();
+                        } else {
+                            silverMineral2X = (int) recognition.getLeft();
+                        }
+                    }
+                    if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                            goldElement = 1;
+                            telemetry.addData("Gold Mineral Position", "Left");
+                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                            goldElement = 2;
+                            telemetry.addData("Gold Mineral Position", "Right");
+                        } else {
+                            goldElement = 3;
+                            telemetry.addData("Gold Mineral Position", "Center");
+                        }
+                    }
+                }
+                telemetry.update();
+            }
+        }
     }
 
     @Override
@@ -96,7 +143,7 @@ abstract class AutonomousBaseOp extends BaseOp {
     }
 
     //index starting from zero
-    public static int addUp (int[] arr, int index) {
+    public static int addUp(int[] arr, int index) {
 //        if (index != 0) {
         int total = 0;
         for (int i = 0; i < index; i++) {
@@ -104,6 +151,49 @@ abstract class AutonomousBaseOp extends BaseOp {
         }
         return total;
     }
+
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    private VuforiaLocalizer vuforia;
+
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
+     * Detection engine.
+     */
+    private TFObjectDetector tfod;
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+    }
+
+    /**
+     * Initialize the Tensor Flow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
+
+
 //    private void initVuforia() {
 //        /*
 //         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

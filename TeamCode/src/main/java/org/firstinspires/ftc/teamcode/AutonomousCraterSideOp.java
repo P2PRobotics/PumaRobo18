@@ -9,9 +9,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "AutonomousCraterSideOp", group = "Competition")
 public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameConstants {
 
+    int goldDriveTime = 550;
+    double lastOrientation = 45.0;
+    double goldSpin = 35.0;
+
     @Override
     public void loop() {
         super.loop();
+
+        telemetry.addData("State: ", state);
+        telemetry.addData("Gold: ", goldElement);
+        telemetry.addData("GoldDriveTime: ", goldDriveTime);
+        telemetry.addData("GoldSpin: ", goldSpin);
 
         switch (state) {
             case 0:
@@ -30,23 +39,55 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 2: // UNLATCH
+            case 2: // UNLATCH AND INCH FORWARD
                 if (autoRuntime.time() < 2_500) {
                     latchOpen();
-                } else if (autoRuntime.time() < 3_000) {
+                } else if (autoRuntime.time() < 3_500) {
                     latchStop();
+                    moveStraight(0.25);
+                } else if (autoRuntime.time() < 4_200) {
+                    moveStop();
                 } else {
                     headingController.calibrateTo(42.5d);
+                    // goldElement = 2; // HARD CODE Gold Element here for testing
+                    switch (goldElement) {
+                        case 1: //HIT LEFT ELEMENT WITH RIGHT WHEEL
+                            headingController.setDesired(80.0d);
+                            goldDriveTime = 850;
+                            goldSpin = 0.0;
+                            break;
+
+                        case 2: //HIT MIDDLE ELEMENT BY SPINNING WITH RIGHT WHEEL
+                            headingController.setDesired(headingController.getCurrent());
+                            goldDriveTime = 450;
+                            goldSpin = 40.0;
+                            break;
+
+                        case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
+                            headingController.setDesired(-2.0d);
+                            goldDriveTime = 850;
+                            goldSpin = -0.0;
+                            break;
+                    }
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 3: // DRIVE FWD TO GAME ELEMENT
-                //crater side code
-                if (autoRuntime.time() < 1_000) {
-                    moveStraight(0.5);
-                } else if (autoRuntime.time() < 1_500) {
+            case 3: //TURN TOWARD GOLD ELEMENT
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 4: // DRIVE FWD TO GOLD ELEMENT
+                if (autoRuntime.time() < goldDriveTime) {
+                    moveStraight(0.35);
+                } else if (autoRuntime.time() < goldDriveTime + 500) {
                     moveStop();
                 } else {
                     autoRuntime.reset();
@@ -54,10 +95,43 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 4: // DRIVE BKWD FROM GAME ELEMENT
-                if (autoRuntime.time() < 400) {
-                    moveStraight(-0.5);
-                } else if (autoRuntime.time() < 900) {
+            case 5: // STORE CURRENT HEADING
+                lastOrientation = headingController.update();
+                headingController.setDesired(lastOrientation + goldSpin);
+                autoRuntime.reset();
+                state++;
+                break;
+
+            case 6: // SPIN OVER THE GOLD ELEMENT
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 7: // SPIN BACK
+                headingController.setDesired(lastOrientation);
+                autoRuntime.reset();
+                state++;
+                break;
+
+            case 8: // SPIN BACK
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 9: // DRIVE BKWD FROM GOLD ELEMENT
+                if (autoRuntime.time() < goldDriveTime) {
+                    moveStraight(-0.35);
+                } else if (autoRuntime.time() < goldDriveTime + 500) {
                     moveStop();
                 } else {
                     headingController.setDesired(100.0d);
@@ -66,7 +140,7 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 5: // TURN LEFT
+            case 10: // TURN LEFT
                 if (headingController.getError() != 0.0d) {
                     turn(headingController.getControlValue());
                 } else {
@@ -76,19 +150,19 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 6: // DRIVE FWD TO SIDE WALL
+            case 11: // DRIVE FWD TO SIDE WALL
                 if (autoRuntime.time() < 1_200) {
                     moveStraight(0.45d);
-                } else if (autoRuntime.time() < 1_700) {
+                } else if (autoRuntime.time() < 2_000) {
                     moveStop();
                 } else {
-                    headingController.setDesired(167.0d);
+                    headingController.setDesired(165.0d);
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 7: // TURN TOWARDS DEPOT
+            case 12: // TURN TOWARDS DEPOT
                 if (headingController.getError() != 0.0d) {
                     turn(headingController.getControlValue());
                 } else {
@@ -98,8 +172,8 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 8: // DRIVE FWD TO DEPOT & EJECT
-                if (autoRuntime.time() < 500) {
+            case 13: // DRIVE FWD TO DEPOT & EJECT
+                if (autoRuntime.time() < 400) {
                     moveStraight(0.5);
                     if (autoRuntime.time() > 300) {
                         lowerContainer();
@@ -113,7 +187,7 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 9: // MOVE BKWD & EJECT
+            case 14: // MOVE BKWD & EJECT
                 if (autoRuntime.time() < 500) {
                     moveStraight(-0.5d);
                 } else if (autoRuntime.time() < 1_000) {
@@ -124,7 +198,7 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 }
                 break;
 
-            case 10: // STOP & EJECT
+            case 15: // STOP & EJECT
                 if (autoRuntime.time() < 1_500) {
                     intakeOut();
                 } else {
@@ -133,22 +207,6 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                     state++;
                 }
                 break;
-
-//            case 11:
-//                autoRuntime.reset();
-//                lowerContainer();
-//                state++;
-//                break;
-//
-//            case 12:
-//                if (autoRuntime.time() < 200) {
-//
-//                } else  if(autoRuntime.time() < 700){
-//
-//                } else {
-//                    state++;
-//                }
-//                break;
 
             case 99:
                 stop();
@@ -159,84 +217,6 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 break;
         }
 
-        // INIT_DEPOSIT and DEPOSITING:
-        //   Need to open the container while moving, then brake so that
-        //   the element in the container is forced into the outtake wheel.
-
-
-//            case SCAN:
-//                if (tfod != null) {
-//                    // getUpdatedRecognitions() will return null if no new information is available since
-//                    // the last time that call was made.
-//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-//                    if (updatedRecognitions != null) {
-//                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-//                        if (updatedRecognitions.size() == 3) {
-//                            int goldMineralX = -1;
-//                            int silverMineral1X = -1;
-//                            int silverMineral2X = -1;
-//                            for (Recognition recognition : updatedRecognitions) {
-//                                if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-//                                    goldMineralX = (int) recognition.getLeft();
-//                                } else if (silverMineral1X == -1) {
-//                                    silverMineral1X = (int) recognition.getLeft();
-//                                } else {
-//                                    silverMineral2X = (int) recognition.getLeft();
-//                                }
-//                            }
-//                            if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-//                                if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-//                                    autoRuntime.reset();
-//                                    state = GOLD_LEFT;
-//                                } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-//                                    autoRuntime.reset();
-//                                    state = GOLD_RIGHT;
-//                                } else {
-//                                    autoRuntime.reset();
-//                                    state = GOLD_CENTER;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                break;
-//            case GOLD_LEFT:
-//                if (autoRuntime.time() < 3) {
-//                    curveDrive(1, 1);
-//                }
-//                //Placeholders: need to test ----------------------------------------------------------
-//                break;
-//            case GOLD_CENTER:
-//                if (autoRuntime.time() < 3) {
-//                    moveStraight(0.5);
-//                }
-//                break;
-//            case GOLD_RIGHT:
-//                if (autoRuntime.time() < 3) {
-//                    curveDrive(1, 1);
-//                }
-//                //Placeholders: need to test ----------------------------------------------------------
-//                break;
-//            case PLACE_MARKER:
-//                if (CRATER_SIDE) {
-//
-//                } else {
-//
-//                }
-//                break;
-//            case DRIVE_DEPOT:
-//
-//                break;
-//            case DRIVE_CRATER:
-//
-//                break;
-//            case PARK:
-//                if (CRATER_SIDE) {
-//
-//                } else {
-//
-//                }
-//                break;
     }
 }
 
