@@ -131,12 +131,27 @@ public class AutonomousTensorFlowTest extends BaseOp {
                                     goldElement = 3;
                                     telemetry.addData("Gold Mineral Position", "Right");
                                 } else {
-                                    
+                                    goldElement = 2;
+                                    telemetry.addData("Gold Mineral Position", "Center");
                                 }
                             } else if (centerSilver) {
-
+                                double rand = Math.random();
+                                if (rand < 0.5) {
+                                    goldElement = 3;
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                } else {
+                                    goldElement = 1;
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                }
                             } else if (rightSilver) {
-
+                                double rand = Math.random();
+                                if (rand < 0.5) {
+                                    goldElement = 1;
+                                    telemetry.addData("Gold Mineral Position", "Left");
+                                } else {
+                                    goldElement = 2;
+                                    telemetry.addData("Gold Mineral Position", "Center");
+                                }
                             }
                         } else {
 
