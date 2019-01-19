@@ -39,7 +39,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
             case 2: // UNLATCH AND INCH FORWARD
                 if (autoRuntime.time() < 2_500) {
                     latchOpen();
-                } else if (autoRuntime.time() < 4_000) {
+                } else if (autoRuntime.time() < 3_700) {
                     latchStop();
                     moveStraight(0.25);
                 } else if (autoRuntime.time() < 4_700) {
@@ -49,7 +49,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                     // goldElement = 2; // HARD CODE Gold Element here for testing
                     switch (goldElement) {
                         case 1: //HIT LEFT ELEMENT WITH RIGHT WHEEL
-                            headingController.setDesired(-90.0d);
+                            headingController.setDesired(-80.0d);
                             goldDriveTime = 1700;
                             break;
 
@@ -59,7 +59,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                             break;
 
                         case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
-                            headingController.setDesired(180.0d);
+                            headingController.setDesired(165.0d);
                             goldDriveTime = 1700;
                             break;
                     }
@@ -97,7 +97,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 } else if (autoRuntime.time() < goldDriveTime ) {
                     moveStop();
                 } else {
-                    headingController.setDesired(-65.0d);
+                    headingController.setDesired(-75.0d);
                     autoRuntime.reset();
                     state++;
                 }
@@ -136,9 +136,9 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 13: // DRIVE FWD TO DEPOT & EJECT
-                if (autoRuntime.time() < 400) {
+                if (autoRuntime.time() < 1_650) {
                     moveStraight(0.5);
-                    if (autoRuntime.time() > 300) {
+                    if (autoRuntime.time() > 1_550) {
                         lowerContainer();
                         intakeOut();
                     }
