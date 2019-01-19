@@ -75,7 +75,8 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 break;
 
             case 3: //TURN TOWARD GOLD ELEMENT
-                if (headingController.getError() != 0.0d) {
+                if (headingController.getError() != 0.0d || autoRuntime.time() < 2000) {
+                    //until it turns to object OR 2 seconds pass
                     turn(headingController.getControlValue());
                 } else {
                     moveStop();
