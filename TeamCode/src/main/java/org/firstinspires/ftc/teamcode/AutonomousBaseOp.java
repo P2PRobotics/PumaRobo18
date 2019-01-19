@@ -49,7 +49,7 @@ abstract class AutonomousBaseOp extends BaseOp {
                 () -> (double) imu.getAngularOrientation().firstAngle,
                 2.0d,
                 1.0d,
-                0.2d
+                0.6d //maybe adjust??
         );
         initVuforia();
 
