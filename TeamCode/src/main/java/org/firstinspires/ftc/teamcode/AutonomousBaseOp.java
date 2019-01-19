@@ -37,8 +37,6 @@ abstract class AutonomousBaseOp extends BaseOp {
     BNO055IMU imu;
     AngularPController headingController;
 
-    // add sensors here!!
-    // private VuforiaHelper vuforia;
 
     @Override
     public void init() {
@@ -48,8 +46,8 @@ abstract class AutonomousBaseOp extends BaseOp {
         headingController = new AngularPController(
                 () -> (double) imu.getAngularOrientation().firstAngle,
                 2.0d,
-                1.0d,
-                0.6d //maybe adjust??
+                0.4d,
+                0.3d //maybe adjust??
         );
         initVuforia();
 
