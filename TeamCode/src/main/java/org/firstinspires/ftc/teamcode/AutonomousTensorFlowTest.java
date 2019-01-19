@@ -38,6 +38,8 @@ public class AutonomousTensorFlowTest extends BaseOp {
     // add sensors here!!
     // private VuforiaHelper vuforia;
 
+    private int lastGoldX = -1;
+
     @Override
     public void init() {
         super.init();
@@ -74,34 +76,42 @@ public class AutonomousTensorFlowTest extends BaseOp {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
                 //if (updatedRecognitions.size() == 3) {
                     int goldMineralX = -1;
+
                     ArrayList<Integer> silverLocations = new ArrayList<Integer>();
                     boolean centerSilver = false;
                     boolean leftSilver = false;
                     boolean rightSilver = false;
+
                     for (Recognition recognition : updatedRecognitions) {
                         if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                             goldMineralX = (int) recognition.getTop();
+                            lastGoldX = goldMineralX;
                         } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
                             silverLocations.add((int) recognition.getTop());
                         }
                     }
+
                     for (Integer xLoc: silverLocations) {
-                        if (xLoc < 400) {
+                        if (xLoc < 400)
                             leftSilver = true;
-                        } else if (xLoc < 800) {
+                        else if (xLoc < 800)
                             centerSilver = true;
-                        } else if (xLoc < 1200){
+                        else if (xLoc < 1200)
                             rightSilver = true;
-                        }
                     }
+
                     int foundSilvers = 0;
+
                     if (leftSilver)
                         foundSilvers++;
                     if (centerSilver)
                         foundSilvers++;
                     if (rightSilver)
                         foundSilvers++;
+
+                    //If it detects the gold element, ignore everything else and go for gold
                     if (goldMineralX != -1) {
+
                         if (goldMineralX < 400) {
                             goldElement = 1;
                             telemetry.addData("Gold Mineral Position", "Left");
@@ -112,19 +122,35 @@ public class AutonomousTensorFlowTest extends BaseOp {
                             goldElement = 3;
                             telemetry.addData("Gold Mineral Position", "Right");
                         }
+                    //Else, try to guess based on known information
                     } else {
+                        //If we know two silvers than locate the gold based on where the two silvers are
                         if (foundSilvers  > 1) {
+                            //Gold in Left
                             if (rightSilver && centerSilver) {
                                 goldElement = 1;
                                 telemetry.addData("Gold Mineral Position", "Left");
+                            //Gold in Right
                             } else  if (leftSilver && centerSilver) {
                                 goldElement = 3;
                                 telemetry.addData("Gold Mineral Position", "Right");
+                            //Gold in Center    
                             } else if (rightSilver && leftSilver) {
                                 goldElement = 2;
                                 telemetry.addData("Gold Mineral Position", "Center");
                             }
+                        // If we only found one Silver, take a guess between the other open spots
+                        } else if (lastGoldX < 400 && !leftSilver) {
+                            goldElement = 1;
+                            telemetry.addData("Gold Mineral Position", "Left");
+                        } else if (lastGoldX > 400 && lastGoldX < 800 && !centerSilver) {
+                            goldElement = 2;
+                            telemetry.addData("Gold Mineral Position", "Center");
+                        } else if (lastGoldX > 800 && !rightSilver) {
+                            goldElement = 3;
+                            telemetry.addData("Gold Mineral Position", "Right");
                         } else if (foundSilvers == 1) {
+                            //Silver is in left position, Right and center open
                             if (leftSilver) {
                                 double rand = Math.random();
                                 if (rand < 0.5) {
@@ -134,6 +160,7 @@ public class AutonomousTensorFlowTest extends BaseOp {
                                     goldElement = 2;
                                     telemetry.addData("Gold Mineral Position", "Center");
                                 }
+                            //Silver is in center Position, Left and Right open
                             } else if (centerSilver) {
                                 double rand = Math.random();
                                 if (rand < 0.5) {
@@ -143,6 +170,7 @@ public class AutonomousTensorFlowTest extends BaseOp {
                                     goldElement = 1;
                                     telemetry.addData("Gold Mineral Position", "Left");
                                 }
+                            //Silver is in right position, Left and Center open
                             } else if (rightSilver) {
                                 double rand = Math.random();
                                 if (rand < 0.5) {
@@ -153,8 +181,10 @@ public class AutonomousTensorFlowTest extends BaseOp {
                                     telemetry.addData("Gold Mineral Position", "Center");
                                 }
                             }
+                        //If we detect nothing, then just go forward
                         } else {
-
+                            goldElement = 2;
+                            telemetry.addData("Gold Mineral Position", "Center");
                         }
                     }
                 //}
