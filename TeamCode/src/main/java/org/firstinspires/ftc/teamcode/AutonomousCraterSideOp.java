@@ -45,7 +45,7 @@ public class AutonomousCraterSideOp extends AutonomousBaseOp implements GameCons
                 } else if (autoRuntime.time() < 3_500) {
                     latchStop();
                     moveStraight(0.25);
-                } else if (autoRuntime.time() < 4_200) {
+                } else if (autoRuntime.time() < 4_100) {
                     moveStop();
                 } else {
                     headingController.calibrateTo(42.5d);
