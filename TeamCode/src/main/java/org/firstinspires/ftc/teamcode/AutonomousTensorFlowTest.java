@@ -94,6 +94,13 @@ public class AutonomousTensorFlowTest extends BaseOp {
                             rightSilver = true;
                         }
                     }
+                    int foundSilvers = 0;
+                    if (leftSilver)
+                        foundSilvers++;
+                    if (centerSilver)
+                        foundSilvers++;
+                    if (rightSilver)
+                        foundSilvers++;
                     if (goldMineralX != -1) {
                         if (goldMineralX < 400) {
                             goldElement = 1;
@@ -106,15 +113,33 @@ public class AutonomousTensorFlowTest extends BaseOp {
                             telemetry.addData("Gold Mineral Position", "Right");
                         }
                     } else {
-                        if (rightSilver && centerSilver) {
-                            goldElement = 1;
-                            telemetry.addData("Gold Mineral Position", "Left");
-                        } else  if (leftSilver && centerSilver) {
-                            goldElement = 3;
-                            telemetry.addData("Gold Mineral Position", "Right");
-                        } else if (rightSilver && leftSilver) {
-                            goldElement = 2;
-                            telemetry.addData("Gold Mineral Position", "Center");
+                        if (foundSilvers  > 1) {
+                            if (rightSilver && centerSilver) {
+                                goldElement = 1;
+                                telemetry.addData("Gold Mineral Position", "Left");
+                            } else  if (leftSilver && centerSilver) {
+                                goldElement = 3;
+                                telemetry.addData("Gold Mineral Position", "Right");
+                            } else if (rightSilver && leftSilver) {
+                                goldElement = 2;
+                                telemetry.addData("Gold Mineral Position", "Center");
+                            }
+                        } else if (foundSilvers == 1) {
+                            if (leftSilver) {
+                                double rand = Math.random();
+                                if (rand < 0.5) {
+                                    goldElement = 3;
+                                    telemetry.addData("Gold Mineral Position", "Right");
+                                } else {
+                                    
+                                }
+                            } else if (centerSilver) {
+
+                            } else if (rightSilver) {
+
+                            }
+                        } else {
+
                         }
                     }
                 //}
