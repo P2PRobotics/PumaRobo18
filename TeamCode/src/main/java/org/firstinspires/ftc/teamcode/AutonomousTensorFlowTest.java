@@ -84,10 +84,14 @@ public class AutonomousTensorFlowTest extends BaseOp {
 
                     for (Recognition recognition : updatedRecognitions) {
                         if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getTop();
-                            lastGoldX = goldMineralX;
+                            if (!(recognition.getLeft() > 300)) {
+                                goldMineralX = (int) recognition.getTop();
+                                lastGoldX = goldMineralX;
+                            }
                         } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
-                            silverLocations.add((int) recognition.getTop());
+                            if (!(recognition.getLeft() > 300)) {
+                                silverLocations.add((int) recognition.getTop());
+                            }
                         }
                     }
 

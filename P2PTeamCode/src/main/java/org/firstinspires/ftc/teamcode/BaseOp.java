@@ -41,6 +41,7 @@ public class BaseOp extends OpMode {
         // All drive motors are now wrapped in "decorator" classes that dampen acceleration and
         // ensure the requested power range makes sense for the motors.
         // See: https://www.journaldev.com/1540/decorator-design-pattern-in-java-example
+
         leftFrontMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m12")));
 
         leftBackMotor = new AcceleratingDcMotor(new ClampingDcMotor(hardwareMap.dcMotor.get("m13")));

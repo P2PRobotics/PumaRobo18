@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.pidcontrol.AngularPController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.GameConstants.VUFORIA_KEY_P2PROBOTICSFTC;
@@ -37,6 +38,7 @@ abstract class AutonomousBaseOp extends BaseOp {
     BNO055IMU imu;
     AngularPController headingController;
 
+    private int lastGoldX = -1;
 
     @Override
     public void init() {
@@ -46,8 +48,8 @@ abstract class AutonomousBaseOp extends BaseOp {
         headingController = new AngularPController(
                 () -> (double) imu.getAngularOrientation().firstAngle,
                 2.0d,
-                0.4d,
-                0.3d //maybe adjust??
+                1.0d,
+                0.2d
         );
         initVuforia();
 
@@ -63,6 +65,210 @@ abstract class AutonomousBaseOp extends BaseOp {
 
         state = 0;
     }
+
+    @Override
+    public void init_loop() {
+        super.init_loop();
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+                //if (updatedRecognitions.size() == 3) {
+                int goldMineralX = -1;
+
+                ArrayList<Integer> silverLocations = new ArrayList<Integer>();
+                boolean centerSilver = false;
+                boolean leftSilver = false;
+                boolean rightSilver = false;
+
+                for (Recognition recognition : updatedRecognitions) {
+                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                        if (!(recognition.getLeft() > 300)) {
+                            goldMineralX = (int) recognition.getTop();
+                            lastGoldX = goldMineralX;
+                        }
+                    } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
+                        if (!(recognition.getLeft() > 300)) {
+                            silverLocations.add((int) recognition.getTop());
+                        }
+                    }
+                }
+
+                for (Integer xLoc: silverLocations) {
+                    if (xLoc < 400)
+                        leftSilver = true;
+                    else if (xLoc < 800)
+                        centerSilver = true;
+                    else if (xLoc < 1200)
+                        rightSilver = true;
+                }
+
+                int foundSilvers = 0;
+
+                if (leftSilver)
+                    foundSilvers++;
+                if (centerSilver)
+                    foundSilvers++;
+                if (rightSilver)
+                    foundSilvers++;
+
+                //If it detects the gold element, ignore everything else and go for gold
+                if (goldMineralX != -1) {
+
+                    if (goldMineralX < 400) {
+                        goldElement = 1;
+                        telemetry.addData("Gold Mineral Position", "Left");
+                    } else if (goldMineralX < 800) {
+                        goldElement = 2;
+                        telemetry.addData("Gold Mineral Position", "Center");
+                    } else {
+                        goldElement = 3;
+                        telemetry.addData("Gold Mineral Position", "Right");
+                    }
+                    //Else, try to guess based on known information
+                } else {
+                    //If we know two silvers than locate the gold based on where the two silvers are
+                    if (foundSilvers  > 1) {
+                        //Gold in Left
+                        if (rightSilver && centerSilver) {
+                            goldElement = 1;
+                            telemetry.addData("Gold Mineral Position", "Left");
+                            //Gold in Right
+                        } else  if (leftSilver && centerSilver) {
+                            goldElement = 3;
+                            telemetry.addData("Gold Mineral Position", "Right");
+                            //Gold in Center
+                        } else if (rightSilver && leftSilver) {
+                            goldElement = 2;
+                            telemetry.addData("Gold Mineral Position", "Center");
+                        }
+                        // If we only found one Silver, take a guess between the other open spots
+                    } else if (lastGoldX < 400 && !leftSilver) {
+                        goldElement = 1;
+                        telemetry.addData("Gold Mineral Position", "Left");
+                    } else if (lastGoldX > 400 && lastGoldX < 800 && !centerSilver) {
+                        goldElement = 2;
+                        telemetry.addData("Gold Mineral Position", "Center");
+                    } else if (lastGoldX > 800 && !rightSilver) {
+                        goldElement = 3;
+                        telemetry.addData("Gold Mineral Position", "Right");
+                    } else if (foundSilvers == 1) {
+                        //Silver is in left position, Right and center open
+                        if (leftSilver) {
+                            double rand = Math.random();
+                            if (rand < 0.5) {
+                                goldElement = 3;
+                                telemetry.addData("Gold Mineral Position", "Right");
+                            } else {
+                                goldElement = 2;
+                                telemetry.addData("Gold Mineral Position", "Center");
+                            }
+                            //Silver is in center Position, Left and Right open
+                        } else if (centerSilver) {
+                            double rand = Math.random();
+                            if (rand < 0.5) {
+                                goldElement = 3;
+                                telemetry.addData("Gold Mineral Position", "Right");
+                            } else {
+                                goldElement = 1;
+                                telemetry.addData("Gold Mineral Position", "Left");
+                            }
+                            //Silver is in right position, Left and Center open
+                        } else if (rightSilver) {
+                            double rand = Math.random();
+                            if (rand < 0.5) {
+                                goldElement = 1;
+                                telemetry.addData("Gold Mineral Position", "Left");
+                            } else {
+                                goldElement = 2;
+                                telemetry.addData("Gold Mineral Position", "Center");
+                            }
+                        }
+                        //If we detect nothing, then just go forward
+                    } else {
+                        goldElement = 2;
+                        telemetry.addData("Gold Mineral Position", "Center");
+                    }
+                }
+                //}
+
+                telemetry.addData("Gold LocationX", goldMineralX);
+                telemetry.update();
+            }
+        }
+    }
+
+    /**
+     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+     * localization engine.
+     */
+    private VuforiaLocalizer vuforia;
+
+    /**
+     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
+     * Detection engine.
+     */
+    private TFObjectDetector tfod;
+    private void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+    }
+
+    /**
+     * Initialize the Tensor Flow Object Detection engine.
+     */
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+    }
+
+//    void sleep(long millis){
+//        try {
+//            Thread.sleep(millis);
+//        } catch (InterruptedException e) {
+//        }
+//    }
+//
+//    @Override
+//    public void init() {
+//        super.init();
+//        autoRuntime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+//        imu = initIMU(this.hardwareMap);
+//        headingController = new AngularPController(
+//                () -> (double) imu.getAngularOrientation().firstAngle,
+//                2.0d,
+//                0.4d,
+//                0.3d //maybe adjust??
+//        );
+//        initVuforia();
+//
+//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+//            initTfod();
+//        } else {
+//            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+//        }
+//
+//        if (tfod != null) {
+//            tfod.activate();
+//        }
+//
+//        state = 0;
+//    }
 
     public static BNO055IMU initIMU(HardwareMap hardwareMap) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -80,49 +286,49 @@ abstract class AutonomousBaseOp extends BaseOp {
         return imu;
     }
 
-    /**
-     * This method is called repeatedly after the INIT button is pressed - while we're hanging
-     * waiting for the round to start.
-     */
-    @Override
-    public void init_loop() {
-        super.init_loop();
-        if (tfod != null) {
-            // getUpdatedRecognitions() will return null if no new information is available since
-            // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                if (updatedRecognitions.size() == 3) {
-                    int goldMineralX = -1;
-                    int silverMineral1X = -1;
-                    int silverMineral2X = -1;
-                    for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getTop();
-                        } else if (silverMineral1X == -1) {
-                            silverMineral1X = (int) recognition.getTop();
-                        } else {
-                            silverMineral2X = (int) recognition.getTop();
-                        }
-                    }
-                    if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                            goldElement = 1;
-                            telemetry.addData("Gold Mineral Position", "Left");
-                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            goldElement = 3;
-                            telemetry.addData("Gold Mineral Position", "Right");
-                        } else {
-                            goldElement = 2;
-                            telemetry.addData("Gold Mineral Position", "Center");
-                        }
-                    }
-                }
-                telemetry.update();
-            }
-        }
-    }
+//    /**
+//     * This method is called repeatedly after the INIT button is pressed - while we're hanging
+//     * waiting for the round to start.
+//     */
+//    @Override
+//    public void init_loop() {
+//        super.init_loop();
+//        if (tfod != null) {
+//            // getUpdatedRecognitions() will return null if no new information is available since
+//            // the last time that call was made.
+//            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+//            if (updatedRecognitions != null) {
+//                telemetry.addData("# Object Detected", updatedRecognitions.size());
+//                if (updatedRecognitions.size() == 3) {
+//                    int goldMineralX = -1;
+//                    int silverMineral1X = -1;
+//                    int silverMineral2X = -1;
+//                    for (Recognition recognition : updatedRecognitions) {
+//                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+//                            goldMineralX = (int) recognition.getTop();
+//                        } else if (silverMineral1X == -1) {
+//                            silverMineral1X = (int) recognition.getTop();
+//                        } else {
+//                            silverMineral2X = (int) recognition.getTop();
+//                        }
+//                    }
+//                    if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+//                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+//                            goldElement = 1;
+//                            telemetry.addData("Gold Mineral Position", "Left");
+//                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+//                            goldElement = 3;
+//                            telemetry.addData("Gold Mineral Position", "Right");
+//                        } else {
+//                            goldElement = 2;
+//                            telemetry.addData("Gold Mineral Position", "Center");
+//                        }
+//                    }
+//                }
+//                telemetry.update();
+//            }
+//        }
+//    }
 
     @Override
     public void loop() {
@@ -150,46 +356,46 @@ abstract class AutonomousBaseOp extends BaseOp {
         return total;
     }
 
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
-    private VuforiaLocalizer vuforia;
-
-    /**
-     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
-     * Detection engine.
-     */
-    private TFObjectDetector tfod;
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
-    }
-
-    /**
-     * Initialize the Tensor Flow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
-    }
+//    /**
+//     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+//     * localization engine.
+//     */
+//    private VuforiaLocalizer vuforia;
+//
+//    /**
+//     * {@link #tfod} is the variable we will use to store our instance of the Tensor Flow Object
+//     * Detection engine.
+//     */
+//    private TFObjectDetector tfod;
+//
+//    /**
+//     * Initialize the Vuforia localization engine.
+//     */
+//    private void initVuforia() {
+//        /*
+//         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+//         */
+//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+//
+//        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+//
+//        //  Instantiate the Vuforia engine
+//        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+//
+//        // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
+//    }
+//
+//    /**
+//     * Initialize the Tensor Flow Object Detection engine.
+//     */
+//    private void initTfod() {
+//        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+//                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+//        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+//        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+//    }
 
     void sleep(long millis){
         try {

@@ -39,7 +39,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
             case 2: // UNLATCH AND INCH FORWARD
                 if (autoRuntime.time() < 2_500) {
                     latchOpen();
-                } else if (autoRuntime.time() < 3_700) {
+                } else if (autoRuntime.time() < 3_400) {
                     latchStop();
                     moveStraight(0.25);
                 } else if (autoRuntime.time() < 4_700) {
@@ -59,7 +59,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                             break;
 
                         case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
-                            headingController.setDesired(165.0d);
+                            headingController.setDesired(-170.0d);
                             goldDriveTime = 1700;
                             break;
                     }
@@ -94,10 +94,10 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
             case 9: // DRIVE FWD FROM GOLD ELEMENT
                 if (autoRuntime.time() < goldDriveTime) {
                     moveStraight(0.35);
-                } else if (autoRuntime.time() < goldDriveTime ) {
+                } else if (autoRuntime.time() < goldDriveTime + 1_000) {
                     moveStop();
                 } else {
-                    headingController.setDesired(-75.0d);
+                    headingController.setDesired(-57.0d);
                     autoRuntime.reset();
                     state++;
                 }
@@ -114,12 +114,12 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 11: // DRIVE BKWD TO SIDE WALL
-                if (autoRuntime.time() < 1_600) {
+                if (autoRuntime.time() < 1_750) {
                     moveStraight(-0.45d);
                 } else if (autoRuntime.time() < 2_100) {
                     moveStop();
                 } else {
-                    headingController.setDesired(-5.0d);
+                    headingController.setDesired(7.0d);
                     autoRuntime.reset();
                     state++;
                 }
@@ -166,6 +166,29 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                     intakeOut();
                 } else {
                     intakeStop();
+                    raiseContainer();
+                    headingController.setDesired(-5.0d);
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 16: // TURN TOWARDS CRATER
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 17: // DRIVE BKWD TO CRATER
+                if (autoRuntime.time() < 2_000) {
+                    moveStraight(-0.60d);
+                } else if (autoRuntime.time() < 2_100) {
+                    moveStop();
+                } else {
                     autoRuntime.reset();
                     state++;
                 }

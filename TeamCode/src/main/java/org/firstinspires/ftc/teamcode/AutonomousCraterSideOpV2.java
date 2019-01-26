@@ -3,15 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
- * ON CRATER SIDE:
- * hit element near crater, turn left to depot, place marker, park in crater if time permits
+ * ON DEPOT SIDE:
+ * hit element near depot, place marker, turn left to opposite crater, park in crater if time permits
  */
 @Autonomous(name = "AutonomousCraterSideOpV2", group = "Competition")
 public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameConstants {
-
     int goldDriveTime = 550;
     double lastOrientation = 45.0;
-    double goldSpin = 35.0;
 
     @Override
     public void loop() {
@@ -20,12 +18,11 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
         telemetry.addData("State: ", state);
         telemetry.addData("Gold: ", goldElement);
         telemetry.addData("GoldDriveTime: ", goldDriveTime);
-        telemetry.addData("GoldSpin: ", goldSpin);
 
         switch (state) {
-            case 0:
+            case 0: //ANNOUNCE MAKENNA AS CODEGOD
                 autoRuntime.reset();
-                state++;
+                state = 2;
                 break;
 
             case 1: // LOWER
@@ -39,21 +36,39 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-            case 2: // UNLATCH
+            case 2: // UNLATCH AND INCH FORWARD
                 if (autoRuntime.time() < 2_500) {
-                    latchOpen();
-                } else if (autoRuntime.time() < 3_500) {
+//                    latchOpen();
+                } else if (autoRuntime.time() < 3_400) {
                     latchStop();
                     moveStraight(0.25);
-                } else if (autoRuntime.time() < 4_200) {
+                } else if (autoRuntime.time() < 4_700) {
                     moveStop();
-                    headingController.setDesired(180d);
+                } else {
+                    headingController.calibrateTo(42.5d);
+                    // goldElement = 2; // HARD CODE Gold Element here for testing
+                    switch (goldElement) {
+                        case 1: //HIT LEFT ELEMENT WITH RIGHT WHEEL
+                            headingController.setDesired(-90.0d);
+                            goldDriveTime = 1250;
+                            break;
+
+                        case 2: //HIT MIDDLE ELEMENT WITH RIGHT WHEEL BY SPINNING
+                            headingController.setDesired(-135.0d);
+                            goldDriveTime = 1250;
+                            break;
+
+                        case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
+                            headingController.setDesired(180.0d);
+                            goldDriveTime = 1200;
+                            break;
+                    }
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 3: //TURN AROUND
+            case 3: //TURN TOWARD GOLD ELEMENT
                 if (headingController.getError() != 0.0d) {
                     turn(headingController.getControlValue());
                 } else {
@@ -63,87 +78,32 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-
-            case 4: // CALLIBRATE ANGLE
-                headingController.calibrateTo(42.5d);
-                switch (goldElement) {
-                    case 1: //HIT LEFT ELEMENT WITH RIGHT WHEEL
-                        headingController.setDesired(-2.0d);
-                        goldDriveTime = 850;
-                        goldSpin = 0.0;
-                        break;
-
-                    case 2: //HIT MIDDLE ELEMENT WITH RIGHT WHEEL BY SPINNING
-                        headingController.setDesired(headingController.update());
-                        goldDriveTime = 450;
-                        goldSpin = 40.0;
-                        break;
-
-                    case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
-                        headingController.setDesired(80.0d);
-                        goldDriveTime = 850;
-                        goldSpin = -0.0;
-                        break;
-                }
-
-
-            case 5: // DRIVE FWD TO GOLD ELEMENT
-                if (autoRuntime.time() < goldDriveTime) {
-                    moveStraight(0.35);
-                } else if (autoRuntime.time() < goldDriveTime + 500) {
-                    moveStop();
-                } else {
-                    autoRuntime.reset();
-                    state++;
-                }
-                break;
-
-            case 6: // STORE CURRENT HEADING
-                lastOrientation = headingController.update();
-                headingController.setDesired(lastOrientation + goldSpin);
-                autoRuntime.reset();
-                state++;
-                break;
-
-            case 7: // SPIN OVER THE GOLD ELEMENT
-                if (headingController.getError() != 0.0d) {
-                    turn(headingController.getControlValue());
-                } else {
-                    moveStop();
-                    autoRuntime.reset();
-                    state++;
-                }
-                break;
-
-            case 8: // SPIN BACK
-                headingController.setDesired(lastOrientation);
-                autoRuntime.reset();
-                state++;
-                break;
-
-            case 9: // SPIN BACK
-                if (headingController.getError() != 0.0d) {
-                    turn(headingController.getControlValue());
-                } else {
-                    moveStop();
-                    autoRuntime.reset();
-                    state++;
-                }
-                break;
-
-            case 10: // DRIVE BKWD FROM GOLD ELEMENT
+            case 4: // DRIVE BKWD TO GOLD ELEMENT
                 if (autoRuntime.time() < goldDriveTime) {
                     moveStraight(-0.35);
-                } else if (autoRuntime.time() < goldDriveTime + 500) {
+                } else if (autoRuntime.time() < goldDriveTime) {
                     moveStop();
                 } else {
-                    headingController.setDesired(100.0d); //?????????
+                    autoRuntime.reset();
+                    state=9;
+
+                }
+                break;
+
+
+            case 9: // DRIVE FWD FROM GOLD ELEMENT
+                if (autoRuntime.time() < goldDriveTime) {
+                    moveStraight(0.35);
+                } else if (autoRuntime.time() < goldDriveTime + 1_000) {
+                    moveStop();
+                } else {
+                    headingController.setDesired(-65.0d);
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 11: // TURN LEFT
+            case 10: // TURN RIGHT
                 if (headingController.getError() != 0.0d) {
                     turn(headingController.getControlValue());
                 } else {
@@ -153,19 +113,19 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-            case 12: // DRIVE FWD TO SIDE WALL
-                if (autoRuntime.time() < 1_200) {
-                    moveStraight(0.45d);
-                } else if (autoRuntime.time() < 2_000) {
+            case 11: // DRIVE BKWD TO SIDE WALL
+                if (autoRuntime.time() < 1_650) {
+                    moveStraight(-0.45d);
+                } else if (autoRuntime.time() < 2_100) {
                     moveStop();
                 } else {
-                    headingController.setDesired(165.0d);
+                    headingController.setDesired(177.0d);
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 13: // TURN TOWARDS DEPOT
+            case 12: // TURN TOWARDS DEPOT
                 if (headingController.getError() != 0.0d) {
                     turn(headingController.getControlValue());
                 } else {
@@ -175,10 +135,10 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-            case 14: // DRIVE FWD TO DEPOT & EJECT
-                if (autoRuntime.time() < 400) {
+            case 13: // DRIVE FWD TO DEPOT & EJECT
+                if (autoRuntime.time() < 1_650) {
                     moveStraight(0.5);
-                    if (autoRuntime.time() > 300) {
+                    if (autoRuntime.time() > 1_550) {
                         lowerContainer();
                         intakeOut();
                     }
@@ -190,7 +150,7 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-            case 15: // MOVE BKWD & EJECT
+            case 14: // MOVE BKWD & EJECT
                 if (autoRuntime.time() < 500) {
                     moveStraight(-0.5d);
                 } else if (autoRuntime.time() < 1_000) {
@@ -201,11 +161,34 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
                 }
                 break;
 
-            case 16: // STOP & EJECT
+            case 15: // STOP & EJECT
                 if (autoRuntime.time() < 1_500) {
                     intakeOut();
                 } else {
                     intakeStop();
+                    raiseContainer();
+                    headingController.setDesired(180.0d);
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 16: // TURN TOWARDS CRATER
+                if (headingController.getError() != 0.0d) {
+                    turn(headingController.getControlValue());
+                } else {
+                    moveStop();
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 17: // DRIVE BKWD TO CRATER
+                if (autoRuntime.time() < 1_850) {
+                    moveStraight(-0.60d);
+                } else if (autoRuntime.time() < 2_100) {
+                    moveStop();
+                } else {
                     autoRuntime.reset();
                     state++;
                 }
@@ -221,5 +204,5 @@ public class AutonomousCraterSideOpV2 extends AutonomousBaseOp implements GameCo
         }
 
     }
-}
 
+}
