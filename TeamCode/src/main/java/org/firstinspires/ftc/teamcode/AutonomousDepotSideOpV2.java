@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import static java.lang.String.format;
 
 /**
  * ON DEPOT SIDE:
@@ -11,6 +15,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
     int goldDriveTime = 550;
     double lastOrientation = 45.0;
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void loop() {
         super.loop();
@@ -18,6 +23,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
         telemetry.addData("State: ", state);
         telemetry.addData("Gold: ", goldElement);
         telemetry.addData("GoldDriveTime: ", goldDriveTime);
+        telemetry.addData("time: ", format("%.2f", autoRuntime.time()));
 
         switch (state) {
             case 0:
@@ -41,7 +47,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                     latchOpen();
                 } else if (autoRuntime.time() < 3_400) {
                     latchStop();
-                    moveStraight(0.25);
+                    moveStraight(0.3);
                 } else if (autoRuntime.time() < 4_700) {
                     moveStop();
                 } else {
@@ -49,7 +55,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                     // goldElement = 2; // HARD CODE Gold Element here for testing
                     switch (goldElement) {
                         case 1: //HIT LEFT ELEMENT WITH RIGHT WHEEL
-                            headingController.setDesired(-80.0d);
+                            headingController.setDesired(-95.0d);
                             goldDriveTime = 1700;
                             break;
 
@@ -97,7 +103,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 } else if (autoRuntime.time() < goldDriveTime + 1_000) {
                     moveStop();
                 } else {
-                    headingController.setDesired(-57.0d);
+                    headingController.setDesired(-63.0d);
                     autoRuntime.reset();
                     state++;
                 }
@@ -126,7 +132,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 12: // TURN TOWARDS DEPOT
-                if (headingController.getError() != 0.0d) {
+                if (headingController.getError() != 0.0d && autoRuntime.time() < 3_000) {
                     turn(headingController.getControlValue());
                 } else {
                     moveStop();
@@ -136,9 +142,9 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 13: // DRIVE FWD TO DEPOT & EJECT
-                if (autoRuntime.time() < 1_650) {
+                if (autoRuntime.time() < 1_700) {
                     moveStraight(0.5);
-                    if (autoRuntime.time() > 1_550) {
+                    if (autoRuntime.time() > 1_650) {
                         lowerContainer();
                         intakeOut();
                     }
@@ -174,7 +180,7 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 16: // TURN TOWARDS CRATER
-                if (headingController.getError() != 0.0d) {
+                if (headingController.getError() != 0.0d && autoRuntime.time() < 3_000) {
                     turn(headingController.getControlValue());
                 } else {
                     moveStop();
@@ -184,10 +190,21 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 break;
 
             case 17: // DRIVE BKWD TO CRATER
-                if (autoRuntime.time() < 2_000) {
+                if (autoRuntime.time() < 1_900) {
                     moveStraight(-0.60d);
                 } else if (autoRuntime.time() < 2_100) {
                     moveStop();
+                } else {
+                    autoRuntime.reset();
+                    state++;
+                }
+                break;
+
+            case 18: // RAISE LIFT
+                if (autoRuntime.time() < 2_500) {
+                    lift(-0.5);
+                } else if (autoRuntime.time() < 3_000) {
+                    lift(0);
                 } else {
                     autoRuntime.reset();
                     state++;

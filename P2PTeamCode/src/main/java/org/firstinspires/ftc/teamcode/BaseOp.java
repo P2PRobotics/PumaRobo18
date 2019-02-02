@@ -34,6 +34,9 @@ public class BaseOp extends OpMode {
     public DcMotor intakeMotor;
     public Servo hopperServo;
 
+    //arm thingy
+    public CRServo landerRotator;
+
     @Override
     public void init() {
         //initializes motors, retrieve configs
@@ -66,6 +69,10 @@ public class BaseOp extends OpMode {
 
         liftMotor.setPower(0);
         intakeMotor.setPower(0);
+
+
+        landerRotator = hardwareMap.crservo.get("LRotator"); //revHub 2, servo port 0
+
 
         moveStop();
         raiseContainer();
@@ -135,6 +142,19 @@ public class BaseOp extends OpMode {
 
     public void moveStraight(double power) {
         moveLR(power, power);
+    }
+
+    public void landerRotateUp() {
+        landerRotator.setPower(0.2);
+    }
+
+    public void landerRotateDown() {
+        landerRotator.setPower(-0.2);
+    }
+
+    public void landerRotateStop()
+    {
+        landerRotator.setPower(0);
     }
 
     private void moveLR(double left, double right) {

@@ -29,7 +29,7 @@ public class BasicTeleOp extends BaseOp {
     public void loop() {
         super.loop();
 
-        geometricDrive(gamepad1.right_stick_x,-gamepad1.right_stick_y);
+        geometricDrive(gamepad1.right_stick_x, -gamepad1.right_stick_y);
 
         // B raises extender, A lowers.
         if (gamepad2.b) {
@@ -61,5 +61,14 @@ public class BasicTeleOp extends BaseOp {
         } else if (gamepad2.dpad_down) {
             lowerContainer();
         }
+
+        if (gamepad2.dpad_right) {
+            landerRotateUp();
+        } else if (gamepad2.dpad_left) {
+            landerRotateDown();
+        } else {
+            landerRotateStop();
+        }
+
     }
 }
