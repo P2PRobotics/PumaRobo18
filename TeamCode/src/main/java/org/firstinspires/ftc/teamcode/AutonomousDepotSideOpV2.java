@@ -60,12 +60,12 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                             break;
 
                         case 2: //HIT MIDDLE ELEMENT WITH RIGHT WHEEL BY SPINNING
-                            headingController.setDesired(-135.0d);
+                            headingController.setDesired(-138.0d);
                             goldDriveTime = 1900;
                             break;
 
                         case 3: //HIT RIGHT ELEMENT WITH LEFT WHEEL
-                            headingController.setDesired(-170.0d);
+                            headingController.setDesired(-180.0d);
                             goldDriveTime = 1700;
                             break;
                     }
@@ -173,38 +173,27 @@ public class AutonomousDepotSideOpV2 extends AutonomousBaseOp implements GameCon
                 } else {
                     intakeStop();
                     raiseContainer();
-                    headingController.setDesired(-5.0d);
+                    headingController.setDesired(0.0d);
                     autoRuntime.reset();
                     state++;
                 }
                 break;
 
-            case 16: // TURN TOWARDS CRATER
-                if (headingController.getError() != 0.0d && autoRuntime.time() < 3_000) {
-                    turn(headingController.getControlValue());
-                } else {
-                    moveStop();
-                    autoRuntime.reset();
-                    state++;
-                }
-                break;
+//            case 16: // TURN TOWARDS CRATER
+//                if (headingController.getError() != 0.0d && autoRuntime.time() < 3_000) {
+//                    turn(headingController.getControlValue());
+//                } else {
+//                    moveStop();
+//                    autoRuntime.reset();
+//                    state++;
+//                }
+//                break;
 
-            case 17: // DRIVE BKWD TO CRATER
+            case 16: // DRIVE BKWD TO CRATER
                 if (autoRuntime.time() < 1_900) {
                     moveStraight(-0.60d);
                 } else if (autoRuntime.time() < 2_100) {
                     moveStop();
-                } else {
-                    autoRuntime.reset();
-                    state++;
-                }
-                break;
-
-            case 18: // RAISE LIFT
-                if (autoRuntime.time() < 2_500) {
-                    lift(-0.5);
-                } else if (autoRuntime.time() < 3_000) {
-                    lift(0);
                 } else {
                     autoRuntime.reset();
                     state++;

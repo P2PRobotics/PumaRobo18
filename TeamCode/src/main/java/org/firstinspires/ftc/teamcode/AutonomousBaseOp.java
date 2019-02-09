@@ -83,11 +83,14 @@ abstract class AutonomousBaseOp extends BaseOp {
                 boolean leftSilver = false;
                 boolean rightSilver = false;
 
+
+
                 for (Recognition recognition : updatedRecognitions) {
                     if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
                         if (!(recognition.getLeft() > 300)) {
                             goldMineralX = (int) recognition.getTop();
                             lastGoldX = goldMineralX;
+                            telemetry.addData("Crop",recognition.getLeft());
                         }
                     } else if (recognition.getLabel().equals(LABEL_SILVER_MINERAL)) {
                         if (!(recognition.getLeft() > 300)) {
@@ -95,7 +98,6 @@ abstract class AutonomousBaseOp extends BaseOp {
                         }
                     }
                 }
-
                 for (Integer xLoc: silverLocations) {
                     if (xLoc < 400)
                         leftSilver = true;
@@ -103,6 +105,7 @@ abstract class AutonomousBaseOp extends BaseOp {
                         centerSilver = true;
                     else if (xLoc < 1200)
                         rightSilver = true;
+                    telemetry.addData("Location " + xLoc + ":",xLoc);
                 }
 
                 int foundSilvers = 0;
@@ -113,7 +116,6 @@ abstract class AutonomousBaseOp extends BaseOp {
                     foundSilvers++;
                 if (rightSilver)
                     foundSilvers++;
-
                 //If it detects the gold element, ignore everything else and go for gold
                 if (goldMineralX != -1) {
 
@@ -195,6 +197,11 @@ abstract class AutonomousBaseOp extends BaseOp {
                 //}
 
                 telemetry.addData("Gold LocationX", goldMineralX);
+                telemetry.addLine()
+                        .addData("Left Silver", leftSilver)
+                        .addData("Center Silver", centerSilver)
+                        .addData("Right Silver", rightSilver);
+
                 telemetry.update();
             }
         }
