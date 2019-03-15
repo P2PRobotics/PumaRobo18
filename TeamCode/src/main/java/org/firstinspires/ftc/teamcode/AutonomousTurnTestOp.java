@@ -19,25 +19,22 @@ public class AutonomousTurnTestOp extends AutonomousBaseOp implements GameConsta
             .then(
                 () -> headingController.setDesired(-45.0f)
 
-            ).thenUntil(
-                () -> headingController.getError() == 0.0f,
+            ).thenDoUntil(
                 () -> {
                     headingController.update();
                     turn(headingController.getControlValue());
-                }
+                }, () -> headingController.getError() == 0.0f
 
-            ).thenForDuration(2.5,
-                () -> moveStraight(-0.4)
+            ).thenDoForDuration(2.5, () -> moveStraight(-0.4)
 
             ).then(
                 () -> headingController.setDesired(45.0f)
 
-            ).thenUntil(
-                () -> headingController.getError() == 0.0f,
+            ).thenDoUntil(
                 () -> {
                     headingController.update();
                     turn(headingController.getControlValue());
-                }
+                }, () -> headingController.getError() == 0.0f
 
             );
     }

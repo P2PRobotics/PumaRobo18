@@ -79,7 +79,7 @@ class RoboAction {
     }
 
     public static RoboAction init() {
-        return new RoboAction(System::nanoTime, ONCE, DO_NOTHING);
+        return initWithTicker(System::currentTimeMillis);
     }
 
     static RoboAction initWithTicker(Supplier<Long> ticker) {
@@ -90,22 +90,22 @@ class RoboAction {
         return new RoboAction(ticker, FOREVER, DO_NOTHING);
     }
 
-    public RoboAction thenUntil(Predicate<RoboAction> until, Runnable run) {
+    public RoboAction thenDoUntil(Runnable run, Predicate<RoboAction> until) {
         RoboAction next = new RoboAction(ticker, until, run);
         this.tail.next = next;
         this.tail = next;
         return this;
     }
 
-    public RoboAction thenUntil(Supplier<Boolean> until, Runnable run) {
-        return thenUntil((t) -> until.get(), run);
+    public RoboAction thenDoUntil(Runnable run, Supplier<Boolean> until) {
+        return thenDoUntil(run, (t) -> until.get());
     }
 
     public RoboAction then(Runnable run) {
-        return thenUntil((t) -> true, run);
+        return thenDoUntil(run, (t) -> true);
     }
 
-    public RoboAction thenForDuration(double seconds, Runnable run) {
-        return thenUntil((t) -> t.runtime() >= seconds, run);
+    public RoboAction thenDoForDuration(double seconds, Runnable run) {
+        return thenDoUntil(run, (t) -> t.runtime() >= seconds);
     }
 }
